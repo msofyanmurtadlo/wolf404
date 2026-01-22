@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="jv">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar User - Wolf404</title>
+</head>
+<body>
+    <h1>Daftar Pengguna</h1>
+    
+    @yen(dowo(users) == 0)
+        <p>Ora ono user neng kene.</p>
+    yenora
+        <ul>
+        @track_neng($u neng users)
+            <li>{{ $u["name"] }} ({{ $u["email"] }})</li>
+        @punkyan_track
+        </ul>
+    @punkyan_yen
+
+    <hr>
+    <form action="/test-post" method="POST">
+        @csrf
+        <button type="submit">Tes CSRF</button>
+    </form>
+</body>
+</html>

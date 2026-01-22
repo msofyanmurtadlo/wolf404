@@ -4,36 +4,17 @@ $view = garap($name, $data)
     $path = "resources/views/" + $name + ".wlf"
     $template = moco_file($path)
     
-    // CSRF Token logic
-    $token = session_get("_token")
-    menowo $token == "kopong"
-        $token = generate_token()
-        session_set("_token", $token)
+    // Menowo $template gagal diwoco
+    menowo string($template) == "ERROR: gagal moco"
+        balekno "<h1>Halaman View " + $name + " Ora Ketemu</h1>"
     
-    // Replace CSRF placeholder
-    $template = string_replace($template, "@csrf", "<input type='hidden' name='_token' value='" + $token + "'>")
+    // Gunakake 'render_template' sing wis duwe fitur Javanese-Blade:
+    // 1. {{ variabel }} -> output escaped
+    // 2. {!! variabel !!} -> output raw
+    // 3. @csrf -> hidden input token
+    // 4. @yen(kondisi) ... @punkyan_yen -> menowo (if)
+    // 5. @track_neng($item neng $items) ... @punkyan_track -> track (foreach)
     
-    // Menowo $data kuwi kopong, langsung balekno template
-    menowo $data == kopong
-        balekno $template
-        
-    $ks = keys($data)
-    $count = dowo($ks)
-    $i = 0
-    
-    // Looping kabeh key nggo di-replace neng template
-    track $i < $count
-        $key = $ks[$i]
-        $val = $data[$key]
-        
-        // Auto-escape untuk keamanan XSS (kaya Laravel {{ }})
-        $escaped_val = html_escape(string($val))
-        
-        $search = "{{ " + $key + " }}"
-        $template = string_replace($template, $search, $escaped_val)
-        
-        $i = $i + 1
-    
-    balekno $template
+    balekno render_template($template, $data)
 
 balekno $view

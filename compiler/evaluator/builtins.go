@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"bytes"
 	"crypto/rand"
 	"database/sql"
 	"encoding/hex"
@@ -13,7 +14,9 @@ import (
 	"regexp"
 	"strings"
 
+	"wolf404/compiler/lexer"
 	"wolf404/compiler/object"
+	"wolf404/compiler/parser"
 
 	_ "modernc.org/sqlite"
 )
@@ -73,6 +76,128 @@ func init() {
 					fmt.Println(arg.Inspect())
 				}
 				return NULL
+			},
+		},
+		"eval_wolf": {
+			Fn: func(args ...object.Object) object.Object {
+				if len(args) < 1 {
+					return newError("eval_wolf butuhe 1 argumen (code)")
+				}
+				code, ok := args[0].(*object.String)
+				if !ok {
+					return newError("code kudu String")
+				}
+
+				env := object.NewEnvironment()
+				if len(args) > 1 {
+					if hash, ok := args[1].(*object.Hash); ok {
+						for _, pair := range hash.Pairs {
+							if s, ok := pair.Key.(*object.String); ok {
+								env.Set(s.Value, pair.Value)
+							}
+						}
+					}
+				}
+
+				l := lexer.New(code.Value)
+				p := parser.New(l)
+				program := p.ParseProgram()
+				if len(p.Errors()) != 0 {
+					return newError("eval_wolf parse error: %s", p.Errors()[0])
+				}
+
+				return Eval(program, env)
+			},
+		},
+		"render_template": {
+			Fn: func(args ...object.Object) object.Object {
+				if len(args) < 1 {
+					return newError("render_template butuhe 1 argumen (template)")
+				}
+				template, ok := args[0].(*object.String)
+				if !ok {
+					return newError("template kudu String")
+				}
+
+				data := make(map[string]object.Object)
+				if len(args) > 1 {
+					if hash, ok := args[1].(*object.Hash); ok {
+						for _, pair := range hash.Pairs {
+							if s, ok := pair.Key.(*object.String); ok {
+								data[s.Value] = pair.Value
+							}
+						}
+					}
+				}
+
+				// Basic Javanese-Blade Compiler
+
+				// Translate @csrf
+				token := "kopong"
+				if t, ok := sessions["_token"]; ok {
+					token = t.Inspect()
+				}
+				csrfInput := fmt.Sprintf("<input type='hidden' name='_token' value='%s'>", token)
+
+				raw := template.Value
+				raw = strings.ReplaceAll(raw, "@csrf", csrfInput)
+
+				// Regex for variables: {{ $var }} -> escaped, {!! $var !!} -> raw
+				reEscaped := regexp.MustCompile(`{{\s*(.*?)\s*}}`)
+				reRaw := regexp.MustCompile(`{!!\s*(.*?)\s*!!}`)
+
+				// Regex for blocks: @yen(cond) ... @punkyan_yen
+				reYen := regexp.MustCompile(`@yen\s*\((.*?)\)`)
+				raw = reYen.ReplaceAllString(raw, " menowo $1 { ")
+				raw = strings.ReplaceAll(raw, "@punkyan_yen", " } ")
+
+				// Regex for loops: @track($item neng $items) ... @punkyan_track
+				// Wait, Wolf404 track syntax is "track condition { body }"
+				// Laravel style is usually "@foreach($items as $item)"
+				// I'll make a more "Wolf404" like directive: @track_neng($item neng $items)
+				reTrack := regexp.MustCompile(`@track_neng\s*\((.*?)\s+neng\s+(.*?)\)`)
+				raw = reTrack.ReplaceAllString(raw, " $_items = $2; $_len = dowo($_items); $_i = 0; track $_i < $_len { $1 = $_items[$_i]; ")
+				raw = strings.ReplaceAll(raw, "@punkyan_track", " $_i = $_i + 1; } ")
+
+				// Now process the text line by line or segment by segment
+				// We need to escape the static HTML parts
+
+				// For simplicity in this demo, I'll do a very basic segmenting
+				// This is getting complicated. Let's do a simpler "compiler"
+
+				lines := strings.Split(raw, "\n")
+				var buffer bytes.Buffer
+				buffer.WriteString("$_out = ''; ")
+
+				for _, line := range lines {
+					trimmed := strings.TrimSpace(line)
+					if strings.HasPrefix(trimmed, "menowo") || strings.HasPrefix(trimmed, "track") || trimmed == "}" || strings.HasSuffix(trimmed, "}") {
+						buffer.WriteString(line + "\n")
+					} else {
+						// It's a line with potential variables
+						// Escape double quotes in the static line
+						l := strings.ReplaceAll(line, "\"", "\\\"")
+						l = reEscaped.ReplaceAllString(l, "\" + html_escape($1) + \"")
+						l = reRaw.ReplaceAllString(l, "\" + string($1) + \"")
+						buffer.WriteString("$_out = $_out + \"" + l + "\\n\";\n")
+					}
+				}
+				buffer.WriteString("balekno $_out")
+
+				// Evaluate the compiled code
+				env := object.NewEnvironment()
+				for k, v := range data {
+					env.Set(k, v)
+				}
+
+				l := lexer.New(buffer.String())
+				p := parser.New(l)
+				prog := p.ParseProgram()
+				if len(p.Errors()) > 0 {
+					return newError("render_template compile error: %s", p.Errors()[0])
+				}
+
+				return Eval(prog, env)
 			},
 		},
 		"dowo": {

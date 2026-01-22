@@ -16,4 +16,14 @@ $register_web_routes = garap($router, $db, $view)
         balekno $home_controller.about($req)
     )
 
+    $router.get("/test-template", garap($req)
+        balekno $view("test_template", {
+            "users": [
+                {"name": "Mulyono", "email": "mulyono@solo.go.id"},
+                {"name": "Gibran", "email": "g@fufufafa.com"},
+                {"name": "Iriana", "email": "i@gmail.com"}
+            ]
+        })
+    )
+
 balekno $register_web_routes
