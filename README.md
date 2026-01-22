@@ -30,10 +30,22 @@ wolf404/
 
 Agar `.wlf` file memiliki logo Wolf404 dan syntax highlighting di editor:
 
-1. Copy folder `wolf404-vscode` ke folder extensions VS Code:
-   `%USERPROFILE%\.vscode\extensions\`
-2. Restart VS Code.
-3. Pilih "Wolf404 Icons" di File > Preferences > File Icon Theme.
+### Auto Install (Recommended)
+
+```powershell
+Copy-Item -Recurse -Force "wolf404-vscode" "$env:USERPROFILE\.vscode\extensions\wolf404-language-1.0.1"
+```
+
+### Manual Install
+
+1. Copy folder `wolf404-vscode` ke: `%USERPROFILE%\.vscode\extensions\wolf404-language-1.0.1`
+2. Restart VS Code
+3. **Aktifkan Icon Theme**:
+   - Press `Ctrl+Shift+P`
+   - Ketik "File Icon Theme"
+   - Pilih "**A Wolf404 Icons**"
+
+Setelah itu, semua file `.wlf` akan menampilkan logo Wolf404! 🐺
 
 ## 🌟 Features
 
