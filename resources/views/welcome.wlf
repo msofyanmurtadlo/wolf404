@@ -24,6 +24,7 @@
         <p class="text-slate-600 mb-8 leading-relaxed">
             Mbangun web app kanthi rasa kearifan lokal. <br>
             <span class="text-sm text-slate-400">Sugeng rawuh, {{ user }}!</span><br>
+            <span class="text-xs text-red-400">{{ alert }}</span><br>
             <span class="text-sm text-slate-400">Powered by Wolf404 v1.0 & Tailwind CSS</span><br>
             <span class="text-xs text-slate-300">Created by ishowpen</span>
         </p>

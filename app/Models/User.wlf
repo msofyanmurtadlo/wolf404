@@ -1,51 +1,28 @@
 // app/Models/User.wlf
-// Model User - kaya Eloquent neng Laravel
+// Model User - Extends Base Model logic
+
+$BaseModel = nganggo("system/Model.wlf")
 
 gerombolan User
     garap init($db)
-        $this.db = $db
-        $this.table = "users"
+        $this.model = $BaseModel($db, "users")
     
-    // Find user by ID
+    // Delegate to base model
     garap find($id)
-        $sql = "SELECT * FROM " + $this.table + " WHERE id = ?"
-        $result = db_query($sql, [$id])
-        balekno $result
+        balekno $this.model.find($id)
     
-    // Find user by username
-    garap find_by_username($username)
-        $sql = "SELECT * FROM " + $this.table + " WHERE username = ?"
-        $result = db_query($sql, [$username])
-        balekno $result
-    
-    // Get all users
     garap all()
-        $sql = "SELECT id, username, email, name, created_at FROM " + $this.table
-        $result = db_query($sql)
-        balekno $result
+        balekno $this.model.all()
     
-    // Create new user
     garap create($data)
-        $username = $data["username"]
-        $email = $data["email"]
-        $password = hash_password($data["password"])
-        $name = $data["name"]
-        
-        $sql = "INSERT INTO " + $this.table + " (username, email, password, name) VALUES (?, ?, ?, ?)"
-        $result = db_exec($sql, [$username, $email, $password, $name])
-        balekno $result
+        // Auto-hash password if present
+        menowo $data["password"] != kopong
+            $data["password"] = hash_password($data["password"])
+            
+        balekno $this.model.create($data)
     
-    // Update user
-    garap update($id, $data)
-        $name = $data["name"]
-        $email = $data["email"]
-        
-        $sql = "UPDATE " + $this.table + " SET name = ?, email = ? WHERE id = ?"
-        $result = db_exec($sql, [$name, $email, $id])
-        balekno $result
+    garap find_by_username($username)
+        balekno $this.model.find_where("username", $username)
     
-    // Delete user
     garap delete($id)
-        $sql = "DELETE FROM " + $this.table + " WHERE id = ?"
-        $result = db_exec($sql, [$id])
-        balekno $result
+        balekno $this.model.delete($id)

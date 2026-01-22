@@ -2,7 +2,9 @@ package evaluator
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
+	"html"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -25,6 +27,7 @@ func isSafePath(path string) bool {
 }
 
 var dbConnections = make(map[string]*sql.DB)
+var sessions = make(map[string]object.Object)
 
 func convertToWolfObject(v interface{}) object.Object {
 	switch val := v.(type) {
@@ -38,6 +41,19 @@ func convertToWolfObject(v interface{}) object.Object {
 		return &object.String{Value: string(val)}
 	case bool:
 		return &object.Boolean{Value: val}
+	case map[string]interface{}:
+		hash := &object.Hash{Pairs: make(map[object.HashKey]object.HashPair)}
+		for k, v := range val {
+			key := &object.String{Value: k}
+			hash.Pairs[key.HashKey()] = object.HashPair{Key: key, Value: convertToWolfObject(v)}
+		}
+		return hash
+	case []interface{}:
+		elements := make([]object.Object, len(val))
+		for i, v := range val {
+			elements[i] = convertToWolfObject(v)
+		}
+		return &object.Array{Elements: elements}
 	case nil:
 		return NULL
 	default:
@@ -144,6 +160,14 @@ func init() {
 				return &object.Array{Elements: elements}
 			},
 		},
+		"html_escape": {
+			Fn: func(args ...object.Object) object.Object {
+				if len(args) != 1 {
+					return newError("html_escape butuhe 1 argumen")
+				}
+				return &object.String{Value: html.EscapeString(args[0].Inspect())}
+			},
+		},
 		"keys": {
 			Fn: func(args ...object.Object) object.Object {
 				hash, ok := args[0].(*object.Hash)
@@ -178,11 +202,43 @@ func init() {
 
 				fmt.Printf("\n🐺 Wolf404 Development Server started: http://localhost%s\n", addr)
 				http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-					reqObj := &object.Hash{Pairs: make(map[object.HashKey]object.HashPair)}
-					pathKey := &object.String{Value: "path"}
-					reqObj.Pairs[pathKey.HashKey()] = object.HashPair{Key: pathKey, Value: &object.String{Value: r.URL.Path}}
-					methodKey := &object.String{Value: "metode"}
-					reqObj.Pairs[methodKey.HashKey()] = object.HashPair{Key: methodKey, Value: &object.String{Value: r.Method}}
+					// 1. Base Request Info
+					reqData := make(map[string]interface{})
+					reqData["path"] = r.URL.Path
+					reqData["metode"] = r.Method
+
+					// 2. Parse Query Params
+					query := make(map[string]interface{})
+					for k, v := range r.URL.Query() {
+						if len(v) == 1 {
+							query[k] = v[0]
+						} else {
+							query[k] = v
+						}
+					}
+					reqData["query"] = query
+
+					// 3. Parse Body (JSON or Form)
+					body := make(map[string]interface{})
+					if r.Method == "POST" || r.Method == "PUT" || r.Method == "PATCH" {
+						contentType := r.Header.Get("Content-Type")
+						if strings.Contains(contentType, "application/json") {
+							json.NewDecoder(r.Body).Decode(&body)
+						} else {
+							r.ParseForm()
+							for k, v := range r.PostForm {
+								if len(v) == 1 {
+									body[k] = v[0]
+								} else {
+									body[k] = v
+								}
+							}
+						}
+					}
+					reqData["input"] = body
+
+					// Convert to Wolf404 Object
+					reqObj := convertToWolfObject(reqData)
 
 					res := applyFunction(handler, []object.Object{reqObj})
 					if res != nil {
@@ -278,6 +334,35 @@ func init() {
 		"http_error": {
 			Fn: func(args ...object.Object) object.Object {
 				return &object.String{Value: "Error: " + args[1].Inspect()}
+			},
+		},
+		"session_set": {
+			Fn: func(args ...object.Object) object.Object {
+				if len(args) != 2 {
+					return newError("session_set butuhe 2 argumen")
+				}
+				key := args[0].Inspect()
+				sessions[key] = args[1]
+				return TRUE
+			},
+		},
+		"session_get": {
+			Fn: func(args ...object.Object) object.Object {
+				if len(args) != 1 {
+					return newError("session_get butuhe 1 argumen")
+				}
+				key := args[0].Inspect()
+				val, ok := sessions[key]
+				if !ok {
+					return &object.String{Value: "kopong"}
+				}
+				return val
+			},
+		},
+		"session_destroy": {
+			Fn: func(args ...object.Object) object.Object {
+				sessions = make(map[string]object.Object)
+				return TRUE
 			},
 		},
 	}

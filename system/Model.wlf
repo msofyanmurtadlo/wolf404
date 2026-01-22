@@ -1,0 +1,54 @@
+// system/Model.wlf
+// Base Model - Automated CRUD like Eloquent
+
+gerombolan Model
+    garap init($db, $table)
+        $this.db = $db
+        $this.table = $table
+
+    garap all()
+        $sql = "SELECT * FROM " + $this.table
+        balekno db_query($sql)
+
+    garap find($id)
+        $sql = "SELECT * FROM " + $this.table + " WHERE id = ?"
+        $result = db_query($sql, [$id])
+        menowo dowo($result) > 0
+            balekno $result[0]
+        yenora
+            balekno kopong
+
+    garap find_where($column, $value)
+        $sql = "SELECT * FROM " + $this.table + " WHERE " + $column + " = ?"
+        $result = db_query($sql, [$value])
+        balekno $result
+
+    garap create($data)
+        $ks = keys($data)
+        $count = dowo($ks)
+        
+        $columns = ""
+        $placeholders = ""
+        $values = []
+        
+        $i = 0
+        track $i < $count
+            $key = $ks[$i]
+            $columns = $columns + $key
+            $placeholders = $placeholders + "?"
+            plumbungan($values, $data[$key])
+            
+            menowo $i < ($count - 1)
+                $columns = $columns + ", "
+                $placeholders = $placeholders + ", "
+            
+            $i = $i + 1
+            
+        $sql = "INSERT INTO " + $this.table + " (" + $columns + ") VALUES (" + $placeholders + ")"
+        balekno db_exec($sql, $values)
+
+    garap delete($id)
+        $sql = "DELETE FROM " + $this.table + " WHERE id = ?"
+        balekno db_exec($sql, [$id])
+
+balekno Model

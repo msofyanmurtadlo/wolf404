@@ -4,22 +4,25 @@ gerombolan Router
     garap init()
         $this.routes = []
     
-    garap get($path, $handler)
-        $this.add_route("GET", $path, $handler)
+    garap get($path, $handler, $middleware)
+        $this.add_route("GET", $path, $handler, $middleware)
         
-    garap post($path, $handler)
-        $this.add_route("POST", $path, $handler)
+    garap post($path, $handler, $middleware)
+        $this.add_route("POST", $path, $handler, $middleware)
         
-    garap add_route($method, $path, $handler)
-        // Convert {param} to regex group ([^/]+)
+    garap add_route($method, $path, $handler, $middleware)
         $pattern = "^" + string_replace($path, "{", "([^/]+)")
         $pattern = string_replace($pattern, "}", "") + "$"
         
+        menowo $middleware == kopong
+            $middleware = []
+
         $route = {
             "method": $method,
             "path": $path,
             "pattern": $pattern,
-            "handler": $handler
+            "handler": $handler,
+            "middleware": $middleware
         }
         plumbungan($this.routes, $route)
         
@@ -27,11 +30,13 @@ gerombolan Router
         $method = $request["metode"]
         $path = $request["path"]
         
-        // Static file serving legacy (manual for now)
-        menowo $path == "/logo.png"
-            balekno moco_file("public/logo.png")
-        menowo $path == "/logo.ico"
-            balekno moco_file("public/logo.ico")
+        // --- SMART PUBLIC FOLDER ---
+        // Jika file ada di folder public/, kirimkan langsung
+        $public_path = "public" + $path
+        menowo string_contains($path, ".")
+            $content = moco_file($public_path)
+            menowo $content != "ERROR: gagal moco"
+                balekno $content
         
         $i = 0
         $len = dowo($this.routes)
@@ -45,16 +50,31 @@ gerombolan Router
                 menowo string_regex_match($path, $pattern)
                     $handler = $route["handler"]
                     
-                    // Extract parameters
                     $params = string_regex_capture($path, $pattern)
                     $request["params"] = $params
+
+                    $middleware_list = $route["middleware"]
+                    $mw_count = dowo($middleware_list)
+                    $j = 0
+                    $mw_failed = palsu
+                    $mw_response = nil
+
+                    track ($j < $mw_count)
+                        $middleware = $middleware_list[$j]
+                        $mw_res = $middleware.handle($request)
+                        
+                        menowo $mw_res["error"] == bener
+                            $mw_failed = bener
+                            $mw_response = $mw_res
+                            $j = $mw_count
+                        
+                        $j = $j + 1
+                    
+                    menowo $mw_failed
+                        balekno http_error($mw_response["code"], $mw_response["message"])
                     
                     balekno $handler($request)
                 
             $i = $i + 1
         
-        // Default 404 response
-        menowo string_contains($path, "/api/")
-            balekno http_error(404, "Route ora ketemu")
-        yenora
-            balekno "<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>The page you are looking for could not be found.</p></body></html>"
+        balekno http_error(404, "Halaman ora ketemu")

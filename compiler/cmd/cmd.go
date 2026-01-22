@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"database/sql"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -12,6 +13,8 @@ import (
 	"wolf404/compiler/object"
 	"wolf404/compiler/parser"
 	"wolf404/compiler/repl"
+
+	_ "modernc.org/sqlite"
 )
 
 func RunREPL() {
@@ -136,6 +139,21 @@ func ShowVersion() {
 func RunMigrations(args []string) {
 	fmt.Println("🔄 Running migrations...")
 
+	// Open database for tracking
+	db, err := sql.Open("sqlite", "database/database.db")
+	if err != nil {
+		fmt.Printf("❌ Error connecting to database: %v\n", err)
+		return
+	}
+	defer db.Close()
+
+	// Create migrations table if not exists
+	_, err = db.Exec("CREATE TABLE IF NOT EXISTS migrations (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, run_at DATETIME DEFAULT CURRENT_TIMESTAMP)")
+	if err != nil {
+		fmt.Printf("❌ Error creating migrations tracker: %v\n", err)
+		return
+	}
+
 	migrationsDir := "database/migrations"
 	files, err := ioutil.ReadDir(migrationsDir)
 	if err != nil {
@@ -148,8 +166,17 @@ func RunMigrations(args []string) {
 		return
 	}
 
+	runCount := 0
 	for _, file := range files {
 		if !file.IsDir() && filepath.Ext(file.Name()) == ".wlf" {
+			// Check if already run
+			var id int
+			err = db.QueryRow("SELECT id FROM migrations WHERE name = ?", file.Name()).Scan(&id)
+			if err == nil {
+				// Already run, skip
+				continue
+			}
+
 			migrationPath := filepath.Join(migrationsDir, file.Name())
 			fmt.Printf("⚡ Running: %s\n", file.Name())
 
@@ -171,11 +198,23 @@ func RunMigrations(args []string) {
 
 			env := object.NewEnvironment()
 			evaluator.Eval(program, env)
-			fmt.Printf("   ✅ Migrated: %s\n", file.Name())
+
+			// Record in tracker
+			_, err = db.Exec("INSERT INTO migrations (name) VALUES (?)", file.Name())
+			if err != nil {
+				fmt.Printf("   ❌ Error recording migration: %v\n", err)
+			} else {
+				fmt.Printf("   ✅ Migrated: %s\n", file.Name())
+				runCount++
+			}
 		}
 	}
 
-	fmt.Println("\n🐺 Migrations completed!")
+	if runCount == 0 {
+		fmt.Println("ℹ️  Nothing to migrate.")
+	} else {
+		fmt.Printf("\n🐺 %d migrations completed!\n", runCount)
+	}
 }
 
 func MakeController(args []string) {

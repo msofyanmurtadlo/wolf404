@@ -1,0 +1,44 @@
+// system/Schema.wlf
+
+gerombolan Table
+    garap init($name)
+        $this.name = $name
+        $this.columns = []
+
+    garap id()
+        plumbungan($this.columns, "id INTEGER PRIMARY KEY AUTOINCREMENT")
+
+    garap tulis($name)
+        plumbungan($this.columns, $name + " TEXT")
+
+    garap tulis_unik($name)
+        plumbungan($this.columns, $name + " TEXT UNIQUE")
+
+    garap nomer($name)
+        plumbungan($this.columns, $name + " INTEGER")
+
+    garap wanci()
+        plumbungan($this.columns, "created_at DATETIME DEFAULT CURRENT_TIMESTAMP")
+        plumbungan($this.columns, "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP")
+
+    garap to_sql()
+        $sql = "CREATE TABLE IF NOT EXISTS " + $this.name + " ("
+        
+        $i = 0
+        $len = dowo($this.columns)
+        track $i < $len
+            $sql = $sql + $this.columns[$i]
+            menowo $i < ($len - 1)
+                $sql = $sql + ", "
+            $i = $i + 1
+            
+        balekno $sql + ")"
+
+gerombolan Schema
+    garap gawe($name, $callback)
+        $table = Table($name)
+        $callback($table)
+        $sql = $table.to_sql()
+        balekno db_exec($sql)
+
+balekno Schema()

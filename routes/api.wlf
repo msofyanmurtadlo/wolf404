@@ -1,6 +1,5 @@
 // routes/api.wlf
 
-
 $register_api_routes = garap($router, $db)
     
     // Dependencies
@@ -9,35 +8,35 @@ $register_api_routes = garap($router, $db)
     $auth_controller = AuthController($user_model)
     $user_controller = UserController($user_model, $auth_middleware)
 
-    
     // Auth Routes
     $router.post("/api/auth/login", garap($req)
         balekno $auth_controller.login($req)
-    )
+    , [])
     
     $router.post("/api/auth/register", garap($req)
         balekno $auth_controller.register($req)
-    )
+    , [])
     
+    // Protected Routes (using AuthMiddleware)
     $router.get("/api/auth/me", garap($req)
         balekno $auth_controller.me($req)
-    )
+    , [$auth_middleware])
     
     $router.post("/api/auth/logout", garap($req)
         balekno $auth_controller.logout($req)
-    )
+    , [$auth_middleware])
     
     // User Routes
     $router.get("/api/users", garap($req)
         balekno $user_controller.index($req)
-    )
+    , [$auth_middleware])
     
     $router.post("/api/users", garap($req)
         balekno $user_controller.store($req)
-    )
+    , [$auth_middleware])
 
     $router.get("/api/users/{id}", garap($req)
         balekno $user_controller.show($req)
-    )
+    , [$auth_middleware])
 
 balekno $register_api_routes

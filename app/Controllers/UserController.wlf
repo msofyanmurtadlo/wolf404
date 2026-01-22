@@ -1,19 +1,12 @@
 // app/Controllers/UserController.wlf
-// User CRUD Controller - kaya Laravel Resource Controller
 
 gerombolan UserController
     garap init($user_model, $auth_middleware)
         $this.user_model = $user_model
         $this.auth = $auth_middleware
-        ketok("👥 UserController initialized")
-    
+
     // Get all users (index)
     garap index($request)
-        // Check authentication
-        $auth_check = $this.auth.handle($request)
-        menowo $auth_check["error"] == bener
-            balekno http_error($auth_check["code"], $auth_check["message"])
-        
         $users = $this.user_model.all()
         balekno http_json({
             "users": $users
@@ -22,11 +15,6 @@ gerombolan UserController
     // Get single user (show)
     garap show($request)
         $id = $request["params"][0]
-        // Check authentication
-        $auth_check = $this.auth.handle($request)
-        menowo $auth_check["error"] == bener
-            balekno http_error($auth_check["code"], $auth_check["message"])
-        
         $user = $this.user_model.find($id)
         
         menowo dowo($user) > 0
@@ -38,16 +26,12 @@ gerombolan UserController
     
     // Create user (store)
     garap store($request)
-        // Check admin
-        $auth_check = $this.auth.is_admin($request)
-        menowo $auth_check["error"] == bener
-            balekno http_error($auth_check["code"], $auth_check["message"])
-        
+        $input = $request["input"]
         $data = {
-            "username": $request["username"],
-            "email": $request["email"],
-            "password": $request["password"],
-            "name": $request["name"]
+            "username": $input["username"],
+            "email": $input["email"],
+            "password": $input["password"],
+            "name": $input["name"]
         }
         
         $result = $this.user_model.create($data)
@@ -55,57 +39,7 @@ gerombolan UserController
         menowo $result
             balekno http_json({
                 "message": "User digawe sukses",
-                "username": $request["username"]
+                "username": $input["username"]
             })
         yenora
             balekno http_error(500, "Gagal gawe user")
-    
-    // Update user (update)
-    garap update($request, $id)
-        // Check authentication
-        $auth_check = $this.auth.handle($request)
-        menowo $auth_check["error"] == bener
-            balekno http_error($auth_check["code"], $auth_check["message"])
-        
-        // Check if user can update (own profile or admin)
-        $user_id = session_get("user_id")
-        $role = session_get("role")
-        
-        menowo $user_id != $id
-            menowo $role != "admin"
-                balekno http_error(403, "Ora duwe hak ngowahi user iki")
-        
-        $data = {
-            "name": $request["name"],
-            "email": $request["email"]
-        }
-        
-        $result = $this.user_model.update($id, $data)
-        
-        menowo $result
-            balekno http_json({
-                "message": "User diupdate sukses"
-            })
-        yenora
-            balekno http_error(500, "Gagal update user")
-    
-    // Delete user (destroy)
-    garap destroy($request, $id)
-        // Check admin
-        $auth_check = $this.auth.is_admin($request)
-        menowo $auth_check["error"] == bener
-            balekno http_error($auth_check["code"], $auth_check["message"])
-        
-        // Don't allow deleting own account
-        $user_id = session_get("user_id")
-        menowo $user_id == $id
-            balekno http_error(400, "Ora iso mbusak akun dhewe")
-        
-        $result = $this.user_model.delete($id)
-        
-        menowo $result
-            balekno http_json({
-                "message": "User dibusak sukses"
-            })
-        yenora
-            balekno http_error(500, "Gagal mbusak user")

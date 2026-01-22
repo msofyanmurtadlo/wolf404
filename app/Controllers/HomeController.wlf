@@ -1,12 +1,16 @@
 // app/Controllers/HomeController.wlf
 
+$BaseController = nganggo("system/Controller.wlf")
+
 gerombolan HomeController
     garap init($view)
-        $this.view = $view
+        $this.base = $BaseController($view)
 
     garap index($req)
-        $view_func = $this.view
-        balekno $view_func("welcome", {"user": "ishowpen"})
+        balekno $this.base.view("welcome", {
+            "user": "ishowpen",
+            "alert": "Framework Wolf404 wis siap!"
+        })
 
     garap about($req)
-        balekno "<h1>About Page</h1><p>This is a simple web page served by Wolf404 Controller.</p>"
+        balekno "<h1>Halaman About</h1><p>Iki dilayani nganggo Controller.</p>"

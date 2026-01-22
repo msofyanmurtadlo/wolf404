@@ -1,0 +1,15 @@
+// system/Controller.wlf
+// Base Controller
+
+gerombolan Controller
+    garap init($view)
+        $this.view_engine = $view
+
+    garap view($name, $data)
+        $engine = $this.view_engine
+        balekno $engine($name, $data)
+
+    garap json($data)
+        balekno http_json($data)
+
+balekno Controller

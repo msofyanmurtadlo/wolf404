@@ -17,8 +17,11 @@ $view = garap($name, $data)
         $key = $ks[$i]
         $val = $data[$key]
         
+        // Auto-escape untuk keamanan XSS (kaya Laravel {{ }})
+        $escaped_val = html_escape(string($val))
+        
         $search = "{{ " + $key + " }}"
-        $template = string_replace($template, $search, string($val))
+        $template = string_replace($template, $search, $escaped_val)
         
         $i = $i + 1
     
