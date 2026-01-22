@@ -13,4 +13,4 @@ gerombolan HomeController
         })
 
     garap about($req)
-        balekno "<h1>Halaman About</h1><p>Iki dilayani nganggo Controller.</p>"
+        balekno $this.base.view("about", {})

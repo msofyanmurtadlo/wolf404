@@ -1,0 +1,19 @@
+/* public/css/app.css */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --wolf-red: #dc2626;
+    --wolf-dark: #1e293b;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+}
+
+.wolf-btn-primary {
+    @apply px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-red-600/20;
+}
+
+.wolf-btn-secondary {
+    @apply px-6 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-semibold rounded-lg transition-colors;
+}

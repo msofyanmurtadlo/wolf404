@@ -1,0 +1,51 @@
+@warisan("layouts.app")
+
+@bagean("title")
+    Tentang Wolf404
+@punkyan_bagean
+
+@bagean("content")
+    <div class="bg-white p-10 rounded-2xl shadow-xl max-w-lg w-full border border-gray-100">
+        <div class="flex items-center gap-4 mb-6">
+            <img src="/logo.png" alt="Wolf404 Logo" class="w-12 h-12">
+            <div>
+                <h1 class="text-2xl font-bold text-red-600">Tentang Wolf404</h1>
+                <p class="text-sm text-slate-500 font-medium font-mono">v1.3 "Kearifan Lokal"</p>
+            </div>
+        </div>
+
+        <p class="text-slate-600 mb-6 leading-relaxed">
+            <strong>Wolf404</strong> yaiku web framework sing dibangun nggunakake bahasa pemrograman <em>Wolf404</em> (Jawa-English hybrid). 
+            Framework iki fokus neng kearifan lokal, performa, lan kemudahan nggo developer sing senen karo sintaks basa Jawa.
+        </p>
+
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-8">
+            <h2 class="text-sm font-bold text-slate-800 mb-2">🔥 Fitur Unggulan:</h2>
+            <ul class="text-sm text-slate-600 space-y-2">
+                <li class="flex items-center gap-2">
+                    <span class="text-green-500">✔</span> ORM Dasar (Base Model)
+                </li>
+                <li class="flex items-center gap-2">
+                    <span class="text-green-500">✔</span> Full Layouting System (@warisan)
+                </li>
+                <li class="flex items-center gap-2">
+                    <span class="text-green-500">✔</span> Smart Request & Middleware
+                </li>
+                <li class="flex items-center gap-2">
+                    <span class="text-green-500">✔</span> CSRF & XSS Protection
+                </li>
+            </ul>
+        </div>
+        
+        <p class="text-xs text-slate-400 mb-8 italic">
+            "Mbangun web app kanthi klambi batik, mlayu banter kaya srigala."
+        </p>
+
+        <div class="flex justify-between items-center">
+            <a href="/" class="text-slate-500 hover:text-red-600 transition-colors flex items-center gap-1 font-medium">
+                ← Balekno
+            </a>
+            <span class="text-xs text-slate-300">ishowpen &copy; 2026</span>
+        </div>
+    </div>
+@punkyan_bagean

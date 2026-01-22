@@ -130,40 +130,68 @@ func init() {
 					}
 				}
 
-				// Basic Javanese-Blade Compiler
+				raw := template.Value
 
-				// Translate @csrf
+				// 1. Resolve @leboke (Include)
+				reInclude := regexp.MustCompile(`@leboke\s*\(\"(.*?)\"\)`)
+				for reInclude.MatchString(raw) {
+					raw = reInclude.ReplaceAllStringFunc(raw, func(m string) string {
+						name := reInclude.FindStringSubmatch(m)[1]
+						path := filepath.Join("resources", "views", strings.ReplaceAll(name, ".", "/")+".wlf")
+						content, err := os.ReadFile(path)
+						if err != nil {
+							return "<!-- Error Include: " + path + " -->"
+						}
+						return string(content)
+					})
+				}
+
+				// 2. Resolve @warisan (Extend) and @bagean (Section)
+				reExtend := regexp.MustCompile(`@warisan\s*\(\"(.*?)\"\)`)
+				if reExtend.MatchString(raw) {
+					layoutName := reExtend.FindStringSubmatch(raw)[1]
+					layoutPath := filepath.Join("resources", "views", strings.ReplaceAll(layoutName, ".", "/")+".wlf")
+					layoutContent, err := os.ReadFile(layoutPath)
+					if err == nil {
+						// Extract sections from child
+						sections := make(map[string]string)
+						reSection := regexp.MustCompile(`(?s)@bagean\s*\(\"(.*?)\"\)(.*?)@punkyan_bagean`)
+						matches := reSection.FindAllStringSubmatch(raw, -1)
+						for _, m := range matches {
+							sections[m[1]] = m[2]
+						}
+
+						// Replace @panggonan (Yield) in layout
+						finalRaw := string(layoutContent)
+						reYield := regexp.MustCompile(`@panggonan\s*\(\"(.*?)\"\)`)
+						finalRaw = reYield.ReplaceAllStringFunc(finalRaw, func(m string) string {
+							name := reYield.FindStringSubmatch(m)[1]
+							if content, ok := sections[name]; ok {
+								return content
+							}
+							return ""
+						})
+						raw = finalRaw
+					}
+				}
+
+				// 3. Javanese-Blade Compiler logic
 				token := "kopong"
 				if t, ok := sessions["_token"]; ok {
 					token = t.Inspect()
 				}
 				csrfInput := fmt.Sprintf("<input type='hidden' name='_token' value='%s'>", token)
-
-				raw := template.Value
 				raw = strings.ReplaceAll(raw, "@csrf", csrfInput)
 
-				// Regex for variables: {{ $var }} -> escaped, {!! $var !!} -> raw
 				reEscaped := regexp.MustCompile(`{{\s*(.*?)\s*}}`)
 				reRaw := regexp.MustCompile(`{!!\s*(.*?)\s*!!}`)
-
-				// Regex for blocks: @yen(cond) ... @punkyan_yen
 				reYen := regexp.MustCompile(`@yen\s*\((.*?)\)`)
 				raw = reYen.ReplaceAllString(raw, " menowo $1 { ")
 				raw = strings.ReplaceAll(raw, "@punkyan_yen", " } ")
 
-				// Regex for loops: @track($item neng $items) ... @punkyan_track
-				// Wait, Wolf404 track syntax is "track condition { body }"
-				// Laravel style is usually "@foreach($items as $item)"
-				// I'll make a more "Wolf404" like directive: @track_neng($item neng $items)
 				reTrack := regexp.MustCompile(`@track_neng\s*\((.*?)\s+neng\s+(.*?)\)`)
 				raw = reTrack.ReplaceAllString(raw, " $_items = $2; $_len = dowo($_items); $_i = 0; track $_i < $_len { $1 = $_items[$_i]; ")
 				raw = strings.ReplaceAll(raw, "@punkyan_track", " $_i = $_i + 1; } ")
-
-				// Now process the text line by line or segment by segment
-				// We need to escape the static HTML parts
-
-				// For simplicity in this demo, I'll do a very basic segmenting
-				// This is getting complicated. Let's do a simpler "compiler"
 
 				lines := strings.Split(raw, "\n")
 				var buffer bytes.Buffer
@@ -171,11 +199,10 @@ func init() {
 
 				for _, line := range lines {
 					trimmed := strings.TrimSpace(line)
-					if strings.HasPrefix(trimmed, "menowo") || strings.HasPrefix(trimmed, "track") || trimmed == "}" || strings.HasSuffix(trimmed, "}") {
+					// Avoid escaping Wolf404 logic lines
+					if strings.HasPrefix(trimmed, "menowo") || strings.HasPrefix(trimmed, "track") || trimmed == "}" || strings.HasSuffix(trimmed, "}") || trimmed == "" {
 						buffer.WriteString(line + "\n")
 					} else {
-						// It's a line with potential variables
-						// Escape double quotes in the static line
 						l := strings.ReplaceAll(line, "\"", "\\\"")
 						l = reEscaped.ReplaceAllString(l, "\" + html_escape($1) + \"")
 						l = reRaw.ReplaceAllString(l, "\" + string($1) + \"")
@@ -184,7 +211,6 @@ func init() {
 				}
 				buffer.WriteString("balekno $_out")
 
-				// Evaluate the compiled code
 				env := object.NewEnvironment()
 				for k, v := range data {
 					env.Set(k, v)
