@@ -139,6 +139,8 @@ func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
 	case lexer.TOKEN_BRING:
 		return p.parseReturnStatement()
+	case lexer.TOKEN_SUMMON:
+		return p.parseSummonStatement()
 	case lexer.TOKEN_PROWL:
 		return p.parseProwlStatement()
 	case lexer.TOKEN_TRACK:

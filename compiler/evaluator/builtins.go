@@ -3,6 +3,7 @@ package evaluator
 import (
 	"bufio"
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -121,6 +122,47 @@ var builtins = map[string]*object.Builtin{
 				return newError("gagal nulis file: %s", err.Error())
 			}
 			return &object.Boolean{Value: true}
+		},
+	},
+	"layani_web": &object.Builtin{
+		Fn: func(args ...object.Object) object.Object {
+			if len(args) != 2 {
+				return newError("butuhe 2 argumen (port, handler_func), mbok wehi %d", len(args))
+			}
+			port, ok := args[0].(*object.Integer)
+			if !ok {
+				return newError("argumen port kudu Nomer, dudu %s", args[0].Type())
+			}
+			handler, ok := args[1].(*object.Function)
+			if !ok {
+				return newError("argumen handler kudu Fungsi (garap), dudu %s", args[1].Type())
+			}
+
+			addr := fmt.Sprintf(":%d", port.Value)
+			fmt.Printf("🐺 Wolf404 melayani neng http://localhost%s\n", addr)
+
+			http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+				// Gawe object request nggo neng Wolf404
+				reqObj := &object.Hash{Pairs: make(map[object.HashKey]object.HashPair)}
+				pathKey := &object.String{Value: "path"}
+				reqObj.Pairs[pathKey.HashKey()] = object.HashPair{Key: pathKey, Value: &object.String{Value: r.URL.Path}}
+
+				methodKey := &object.String{Value: "metode"}
+				reqObj.Pairs[methodKey.HashKey()] = object.HashPair{Key: methodKey, Value: &object.String{Value: r.Method}}
+
+				// Jalanke handler
+				res := applyFunction(handler, []object.Object{reqObj})
+				if res != nil {
+					fmt.Fprint(w, res.Inspect())
+				}
+			})
+
+			err := http.ListenAndServe(addr, nil)
+			if err != nil {
+				return newError("Server web njeblug: %s", err.Error())
+			}
+
+			return NULL
 		},
 	},
 }

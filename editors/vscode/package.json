@@ -1,0 +1,39 @@
+{
+  "name": "wolf404-highlight",
+  "displayName": "Wolf404 Jowo Script Highlight",
+  "description": "Syntax highlighting nggo boso Wolf404 Edisi Jowo Kasar",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.50.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "icon": "logo.ico",
+  "contributes": {
+    "languages": [
+      {
+        "id": "wolf404",
+        "aliases": [
+          "Wolf404",
+          "wolf404"
+        ],
+        "extensions": [
+          ".wlf"
+        ],
+        "icon": {
+          "light": "./logo.ico",
+          "dark": "./logo.ico"
+        },
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "wolf404",
+        "scopeName": "source.wolf404",
+        "path": "./syntaxes/wolf404.tmLanguage.json"
+      }
+    ]
+  }
+}

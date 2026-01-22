@@ -1,8 +1,11 @@
 package evaluator
 
 import (
+	"os"
 	"wolf404/compiler/ast"
+	"wolf404/compiler/lexer"
 	"wolf404/compiler/object"
+	"wolf404/compiler/parser"
 )
 
 func evalClassStatement(node *ast.ClassStatement, env *object.Environment) object.Object {
@@ -104,4 +107,22 @@ func evalAssignmentExpression(node *ast.InfixExpression, env *object.Environment
 	}
 
 	return newError("invalid assignment target")
+}
+
+func evalSummonStatement(node *ast.SummonStatement, env *object.Environment) object.Object {
+	path := node.Path.Value
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return newError("gagal ngundang file: %s", err.Error())
+	}
+
+	l := lexer.New(string(content))
+	p := parser.New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) != 0 {
+		return newError("gagal ngonversi file nggih diundang: %v", p.Errors())
+	}
+
+	return Eval(program, env)
 }

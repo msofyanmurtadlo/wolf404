@@ -73,6 +73,9 @@ func Eval(node ast.Node, env *object.Environment) (result object.Object) {
 	case *ast.ClassStatement:
 		return evalClassStatement(node, env)
 
+	case *ast.SummonStatement:
+		return evalSummonStatement(node, env)
+
 	// Expressions
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}

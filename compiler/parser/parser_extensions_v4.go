@@ -62,3 +62,16 @@ func (p *Parser) parseClassStatement() *ast.ClassStatement {
 
 	return stmt
 }
+
+func (p *Parser) parseSummonStatement() *ast.SummonStatement {
+	stmt := &ast.SummonStatement{Token: p.curToken}
+
+	if p.peekToken.Type != lexer.TOKEN_STRING {
+		return nil
+	}
+	p.nextToken()
+
+	stmt.Path = &ast.StringLiteral{Token: p.curToken, Value: p.curToken.Literal}
+
+	return stmt
+}

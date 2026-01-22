@@ -161,6 +161,20 @@ func (cs *ClassStatement) String() string {
 	return out.String()
 }
 
+type SummonStatement struct {
+	Token lexer.Token // 'summon'
+	Path  *StringLiteral
+}
+
+func (ss *SummonStatement) statementNode()       {}
+func (ss *SummonStatement) TokenLiteral() string { return ss.Token.Literal }
+func (ss *SummonStatement) String() string {
+	var out bytes.Buffer
+	out.WriteString("summon ")
+	out.WriteString(ss.Path.String())
+	return out.String()
+}
+
 type ProwlStatement struct {
 	Token lexer.Token // 'prowl'
 	Call  Expression  // The function call
