@@ -2,8 +2,11 @@ package evaluator
 
 import (
 	"fmt"
+	"os"
 	"wolf404/compiler/ast"
+	"wolf404/compiler/lexer"
 	"wolf404/compiler/object"
+	"wolf404/compiler/parser"
 )
 
 var (
@@ -23,10 +26,10 @@ func Eval(node ast.Node, env *object.Environment) (result object.Object) {
 	// Statements
 	case *ast.Program:
 		return evalProgram(node, env)
-	
+
 	case *ast.ExpressionStatement:
 		return Eval(node.Expression, env)
-		
+
 	case *ast.LetStatement:
 		val := Eval(node.Value, env)
 		if isError(val) {
@@ -52,6 +55,9 @@ func Eval(node ast.Node, env *object.Environment) (result object.Object) {
 		return &object.Function{Parameters: params, Env: env, Body: body}
 
 	case *ast.CallExpression:
+		if ident, ok := node.Function.(*ast.Identifier); ok && ident.Value == "nganggo" {
+			return evalImport(node, env)
+		}
 		function := Eval(node.Function, env)
 		if isError(function) {
 			return function
@@ -79,7 +85,7 @@ func Eval(node ast.Node, env *object.Environment) (result object.Object) {
 	// Expressions
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
-	
+
 	case *ast.ArrayLiteral:
 		elements := evalExpressions(node.Elements, env)
 		if len(elements) == 1 && isError(elements[0]) {
@@ -103,7 +109,7 @@ func Eval(node ast.Node, env *object.Environment) (result object.Object) {
 
 	case *ast.Boolean:
 		return nativeBoolToBooleanObject(node.Value)
-		
+
 	case *ast.StringLiteral:
 		return &object.String{Value: node.Value}
 
@@ -198,7 +204,7 @@ func evalIdentifier(node *ast.Identifier, env *object.Environment) object.Object
 		return builtin
 	}
 
-	return newError("identifier not found: " + node.Value)
+	return newError("Lha, '%s' kok ora ono?", node.Value)
 }
 
 func evalInfixExpression(operator string, left, right object.Object) object.Object {
@@ -230,7 +236,7 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 		return &object.Integer{Value: leftVal * rightVal}
 	case "/":
 		if rightVal == 0 {
-			return newError("Ora iso pembagian nol (Division by Zero)! Gendeng opo?")
+			return newError("Waduh, pembagian nol kui ora iso!")
 		}
 		return &object.Integer{Value: leftVal / rightVal}
 	case "<":
@@ -247,12 +253,19 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 }
 
 func evalStringInfixExpression(operator string, left, right object.Object) object.Object {
-	if operator != "+" {
-		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
-	}
 	leftVal := left.(*object.String).Value
 	rightVal := right.(*object.String).Value
-	return &object.String{Value: leftVal + rightVal}
+
+	switch operator {
+	case "+":
+		return &object.String{Value: leftVal + rightVal}
+	case "==":
+		return nativeBoolToBooleanObject(leftVal == rightVal)
+	case "!=":
+		return nativeBoolToBooleanObject(leftVal != rightVal)
+	default:
+		return newError("unknown operator: %s %s %s", left.Type(), operator, right.Type())
+	}
 }
 
 func evalIfExpression(ie *ast.IfExpression, env *object.Environment) object.Object {
@@ -299,4 +312,36 @@ func nativeBoolToBooleanObject(input bool) *object.Boolean {
 		return TRUE
 	}
 	return FALSE
+}
+
+func evalImport(node *ast.CallExpression, env *object.Environment) object.Object {
+	if len(node.Arguments) != 1 {
+		return newError("nganggo butuh 1 argumen (nama file)")
+	}
+
+	arg := Eval(node.Arguments[0], env)
+	if isError(arg) {
+		return arg
+	}
+
+	pathObj, ok := arg.(*object.String)
+	if !ok {
+		return newError("argumen nganggo kudu string")
+	}
+
+	path := pathObj.Value
+	content, err := os.ReadFile(path)
+	if err != nil {
+		return newError("Gagal moco file %s: %s", path, err)
+	}
+
+	l := lexer.New(string(content))
+	p := parser.New(l)
+	program := p.ParseProgram()
+
+	if len(p.Errors()) != 0 {
+		return newError("Error parsing %s: %v", path, p.Errors())
+	}
+
+	return Eval(program, env)
 }

@@ -1,0 +1,24 @@
+// database/migrations/create_users_table.wlf
+// Migration: Create users table
+
+ketok("📊 Running migration: create_users_table")
+
+$sql = "CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    name TEXT,
+    role TEXT DEFAULT 'user',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+)"
+
+$result = db_exec($sql)
+
+menowo $result
+    ketok("✅ Table 'users' created successfully")
+yenora
+    ketok("❌ Failed to create table 'users'")
+
+balekno $result

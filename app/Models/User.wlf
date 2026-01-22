@@ -1,0 +1,61 @@
+// app/Models/User.wlf
+// Model User - kaya Eloquent neng Laravel
+
+gerombolan User
+    garap init($db)
+        $this.db = $db
+        $this.table = "users"
+    
+    // Find user by ID
+    garap find($id)
+        $sql = "SELECT * FROM " + $this.table + " WHERE id = " + $id
+        $result = db_query($sql)
+        balekno $result
+    
+    // Find user by username
+    garap find_by_username($username)
+        $sql = "SELECT * FROM " + $this.table + " WHERE username = '" + $username + "'"
+        $result = db_query($sql)
+        balekno $result
+    
+    // Find user by email
+    garap find_by_email($email)
+        $sql = "SELECT * FROM " + $this.table + " WHERE email = '" + $email + "'"
+        $result = db_query($sql)
+        balekno $result
+    
+    // Get all users
+    garap all()
+        $sql = "SELECT id, username, email, name, created_at FROM " + $this.table
+        $result = db_query($sql)
+        balekno $result
+    
+    // Create new user
+    garap create($data)
+        $username = $data["username"]
+        $email = $data["email"]
+        $password = hash_password($data["password"])
+        $name = $data["name"]
+        
+        $sql = "INSERT INTO " + $this.table + " (username, email, password, name) VALUES ('" + $username + "', '" + $email + "', '" + $password + "', '" + $name + "')"
+        $result = db_exec($sql)
+        balekno $result
+    
+    // Update user
+    garap update($id, $data)
+        $name = $data["name"]
+        $email = $data["email"]
+        
+        $sql = "UPDATE " + $this.table + " SET name = '" + $name + "', email = '" + $email + "' WHERE id = " + $id
+        $result = db_exec($sql)
+        balekno $result
+    
+    // Delete user
+    garap delete($id)
+        $sql = "DELETE FROM " + $this.table + " WHERE id = " + $id
+        $result = db_exec($sql)
+        balekno $result
+    
+    // Verify password
+    garap verify_password($password, $hash)
+        balekno verify_password($password, $hash)

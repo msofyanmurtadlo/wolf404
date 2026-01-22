@@ -1,0 +1,4 @@
+// config/app.wlf
+$APP_NAME = "Wolf404 Framework"
+$APP_PORT = 8080
+$APP_ENV = "local"

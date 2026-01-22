@@ -38,18 +38,18 @@ const (
 	TOKEN_NOT      // not
 
 	// Delimiters
-	TOKEN_COMMA     // ,
-	TOKEN_COLON     // :
-	TOKEN_LPAREN    // (
-	TOKEN_RPAREN    // )
-	TOKEN_LBRACE    // {
-	TOKEN_RBRACE    // }
-	TOKEN_LBRACKET  // [
-	TOKEN_RBRACKET  // ]
-	TOKEN_DOLLAR    // $
-	TOKEN_NEWLINE   // \n
-	TOKEN_INDENT    // indentation
-	TOKEN_DEDENT    // dedentation
+	TOKEN_COMMA    // ,
+	TOKEN_COLON    // :
+	TOKEN_LPAREN   // (
+	TOKEN_RPAREN   // )
+	TOKEN_LBRACE   // {
+	TOKEN_RBRACE   // }
+	TOKEN_LBRACKET // [
+	TOKEN_RBRACKET // ]
+	TOKEN_DOLLAR   // $
+	TOKEN_NEWLINE  // \n
+	TOKEN_INDENT   // indentation
+	TOKEN_DEDENT   // dedentation
 
 	// Keywords (Wolf404 specific)
 	TOKEN_HUNT    // hunt (function definition)
@@ -69,24 +69,42 @@ const (
 )
 
 var keywords = map[string]TokenType{
-	"garap":   TOKEN_HUNT,
-	"gerombolan":   TOKEN_MOLD,
-	"menowo":  TOKEN_SNIFF,
-	"yenora":  TOKEN_MISSING,
-	"baleni":  TOKEN_TRACK,
-	"balekno": TOKEN_BRING,
-	"bengok":  TOKEN_HOWL,
-	"undang":  TOKEN_SUMMON,
-	"bungkus": TOKEN_PACK,
-	"neng":    TOKEN_IN,
-	"deret":   TOKEN_RANGE,
-	"bener":   TOKEN_TRUE,
-	"salah":   TOKEN_FALSE,
-	"kopong":  TOKEN_NIL,
-	"lan":     TOKEN_AND,
-	"utowo":   TOKEN_OR,
-	"ora":     TOKEN_NOT,
-	"playon":  TOKEN_PROWL,
+	"garap":      TOKEN_HUNT,
+	"hunt":       TOKEN_HUNT,
+	"gerombolan": TOKEN_MOLD,
+	"mold":       TOKEN_MOLD,
+	"menowo":     TOKEN_SNIFF,
+	"sniff":      TOKEN_SNIFF,
+	"yenora":     TOKEN_MISSING,
+	"missing":    TOKEN_MISSING,
+	"baleni":     TOKEN_TRACK,
+	"track":      TOKEN_TRACK,
+	"balekno":    TOKEN_BRING,
+	"bring":      TOKEN_BRING,
+	"ketok":      TOKEN_HOWL,
+	"howl":       TOKEN_HOWL,
+	"undang":     TOKEN_SUMMON,
+	"summon":     TOKEN_SUMMON,
+	"bungkus":    TOKEN_PACK,
+	"pack":       TOKEN_PACK,
+	"neng":       TOKEN_IN,
+	"in":         TOKEN_IN,
+	"deret":      TOKEN_RANGE,
+	"range":      TOKEN_RANGE,
+	"bener":      TOKEN_TRUE,
+	"true":       TOKEN_TRUE,
+	"salah":      TOKEN_FALSE,
+	"false":      TOKEN_FALSE,
+	"kopong":     TOKEN_NIL,
+	"nil":        TOKEN_NIL,
+	"lan":        TOKEN_AND,
+	"and":        TOKEN_AND,
+	"utowo":      TOKEN_OR,
+	"or":         TOKEN_OR,
+	"ora":        TOKEN_NOT,
+	"not":        TOKEN_NOT,
+	"playon":     TOKEN_PROWL,
+	"prowl":      TOKEN_PROWL,
 }
 
 // Token represents a lexical token
@@ -105,7 +123,7 @@ type Lexer struct {
 	ch           byte // current char
 	line         int
 	column       int
-	indentStack  []int // track indentation levels
+	indentStack  []int   // track indentation levels
 	tokenQueue   []Token // Buffered tokens for DEDENT generation
 }
 
@@ -157,16 +175,17 @@ func (l *Lexer) handleNewline() {
 	// Count indentation for the next line
 	indentLen := 0
 	for l.ch == ' ' || l.ch == '\t' {
-		if l.ch == ' ' {
+		switch l.ch {
+		case ' ':
 			indentLen++
-		} else if l.ch == '\t' {
-			indentLen += 4 // Assume tab = 4 spaces, simplistic
+		case '\t':
+			indentLen += 4 // Assume tab = 4 spaces
 		}
 		l.readChar()
 	}
 
 	// If empty line (newline again), just return, recursively NextToken will handle it
-	if l.ch == '\n' || l.ch == 0 {
+	if l.ch == '\n' || l.ch == '\r' || l.ch == 0 {
 		return
 	}
 
@@ -178,13 +197,11 @@ func (l *Lexer) handleNewline() {
 		l.tokenQueue = append(l.tokenQueue, Token{Type: TOKEN_INDENT, Literal: "INDENT", Line: l.line})
 	} else if indentLen < currentIndent {
 		l.tokenQueue = append(l.tokenQueue, Token{Type: TOKEN_NEWLINE, Literal: "\n", Line: l.line - 1})
-		// Pop dedents
+		// Pop dedents until matches
 		for len(l.indentStack) > 1 && indentLen < l.indentStack[len(l.indentStack)-1] {
 			l.indentStack = l.indentStack[:len(l.indentStack)-1]
 			l.tokenQueue = append(l.tokenQueue, Token{Type: TOKEN_DEDENT, Literal: "DEDENT", Line: l.line})
 		}
-		// Logic check: if indentLen != stack top now, it's an indentation error (Python raises error)
-		// For now we ignore/forgive mismatch
 	} else {
 		// If equal, just a newline separator
 		l.tokenQueue = append(l.tokenQueue, Token{Type: TOKEN_NEWLINE, Literal: "\n", Line: l.line - 1})
@@ -200,23 +217,27 @@ func (l *Lexer) NextToken() Token {
 		return tok
 	}
 
-	var tok Token
+	// 2. Check for EOF and remaining indents
+	if l.ch == 0 {
+		if len(l.indentStack) > 1 {
+			l.indentStack = l.indentStack[:len(l.indentStack)-1]
+			return Token{Type: TOKEN_DEDENT, Literal: "DEDENT", Line: l.line, Column: l.column}
+		}
+		return Token{Type: TOKEN_EOF, Literal: "", Line: l.line, Column: l.column}
+	}
 
 	l.skipWhitespaceExceptNewline()
 
+	var tok Token
 	tok.Line = l.line
 	tok.Column = l.column
 
 	switch l.ch {
-	case '\n':
-		l.handleNewline()
-		// If queue populated, return first token
-		if len(l.tokenQueue) > 0 {
-			tok = l.tokenQueue[0]
-			l.tokenQueue = l.tokenQueue[1:]
-			return tok
+	case '\n', '\r':
+		if l.ch == '\r' && l.peekChar() == '\n' {
+			l.readChar()
 		}
-		// If queue empty (e.g. empty lines skipped), recurse
+		l.handleNewline()
 		return l.NextToken()
 	case '=':
 		if l.peekChar() == '=' {

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Wolf404",
+  "patterns": [
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#functions"
+    }
+  ],
+  "repository": {
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.wolf404",
+          "match": "\\b(menowo|yenora|track|balekno|nganggo|njaluk)\\b"
+        },
+        {
+          "name": "storage.type.wolf404",
+          "match": "\\b(gerombolan|garap|isi|summon)\\b"
+        },
+        {
+          "name": "constant.language.wolf404",
+          "match": "\\b(bener|salah|kopong)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.wolf404",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.wolf404",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.wolf404",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "functions": {
+      "name": "support.function.wolf404",
+      "match": "\\b(ketok|dowo|string|string_contains|plumbungan|layani_web|db_connect|db_query|db_exec|http_json|http_error|session_start|session_set|session_get|session_destroy)\\b"
+    }
+  },
+  "scopeName": "source.wolf404"
+}

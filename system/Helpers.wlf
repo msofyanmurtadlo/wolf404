@@ -1,0 +1,6 @@
+
+$view = garap($name)
+    $path = "resources/views/" + $name + ".wlf"
+    balekno moco_file($path)
+
+balekno $view

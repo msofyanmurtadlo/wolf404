@@ -20,6 +20,14 @@ func main() {
 		cmd.InitProject(os.Args[2:])
 	case "gas":
 		cmd.RunFile(os.Args[2:])
+	case "gawe:model":
+		cmd.MakeModel(os.Args[2:])
+	case "gawe:controller":
+		cmd.MakeController(os.Args[2:])
+	case "gawe:middleware":
+		cmd.MakeMiddleware(os.Args[2:])
+	case "migrate":
+		cmd.RunMigrations(os.Args[2:])
 	case "build":
 		cmd.BuildFile(os.Args[2:])
 	case "pack":
@@ -39,16 +47,23 @@ func main() {
 
 func printUsage() {
 	fmt.Println("🐺 Wolf404 Compiler v0.1.0")
+	fmt.Println("Created by ishowpen")
 	fmt.Println("\nUsage:")
 	fmt.Println("  wlf init <project-name>       Create new Wolf404 project")
 	fmt.Println("  wlf gas <file.wlf>            Run Wolf404 file in dev mode")
+	fmt.Println("  wlf gas server                Start the Wolf404 server")
+	fmt.Println("  wlf gawe:model <Name>         Generate Model and Migration")
+	fmt.Println("  wlf gawe:controller <Name>    Generate Controller")
+	fmt.Println("  wlf gawe:middleware <Name>    Generate Middleware")
+	fmt.Println("  wlf migrate                   Run database migrations")
 	fmt.Println("  wlf build <file.wlf>          Build executable binary")
-	fmt.Println("  wlf pack add <package>        Add package to project")
 	fmt.Println("  wlf test                      Run tests")
 	fmt.Println("  wlf fmt <file.wlf>            Format Wolf404 code")
 	fmt.Println("  wlf version                   Show version")
 	fmt.Println("\nExamples:")
 	fmt.Println("  wlf init my-web-app")
-	fmt.Println("  wlf gas main.wlf")
-	fmt.Println("  wlf build main.wlf -o app")
+	fmt.Println("  wlf gas server")
+	fmt.Println("  wlf gawe:model Product")
+	fmt.Println("  wlf gawe:controller ProductController")
+	fmt.Println("  wlf migrate")
 }

@@ -1,0 +1,19 @@
+// routes/web.wlf
+
+
+$register_web_routes = garap($router, $db, $view)
+    ketok("🌐 Registering web routes...")
+    
+    // Dependencies
+    $home_controller = HomeController($view)
+
+    // Web Routes
+    $router.get("/", garap($req)
+        balekno $home_controller.index($req)
+    )
+    
+    $router.get("/about", garap($req)
+        balekno $home_controller.about($req)
+    )
+
+balekno $register_web_routes

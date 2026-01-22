@@ -1,0 +1,13 @@
+{
+  "iconDefinitions": {
+    "_wolf": {
+      "iconPath": "./wolf.png"
+    }
+  },
+  "fileExtensions": {
+    "wlf": "_wolf"
+  },
+  "languageIds": {
+    "wolf404": "_wolf"
+  }
+}

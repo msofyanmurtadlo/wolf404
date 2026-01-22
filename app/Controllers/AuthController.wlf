@@ -1,0 +1,109 @@
+// app/Controllers/AuthController.wlf
+// Authentication Controller - kaya Laravel AuthController
+
+gerombolan AuthController
+    garap init($user_model)
+        $this.user_model = $user_model
+        ketok("🔐 AuthController initialized")
+    
+    // Login
+    garap login($request)
+        ketok("📝 Login attempt")
+        
+        // Get credentials from request (simulated)
+        $username = $request["username"]
+        $password = $request["password"]
+        
+        // Find user
+        $user = $this.user_model.find_by_username($username)
+        
+        menowo dowo($user) == 0
+            balekno http_error(401, "Username utawa password salah")
+        
+        // Get user data (first element)
+        $user_data = $user[0]
+        
+        // Verify password
+        $valid = verify_password($password, $user_data["password"])
+        
+        menowo $valid
+            // Create session
+            session_start()
+            session_set("user_id", $user_data["id"])
+            session_set("username", $user_data["username"])
+            session_set("role", $user_data["role"])
+            
+            balekno http_json({
+                "message": "Login sukses!",
+                "user": {
+                    "id": $user_data["id"],
+                    "username": $user_data["username"],
+                    "email": $user_data["email"],
+                    "name": $user_data["name"]
+                }
+            })
+        yenora
+            balekno http_error(401, "Password salah")
+    
+    // Register
+    garap register($request)
+        ketok("📝 Register attempt")
+        
+        // Get data from request
+        $username = $request["username"]
+        $email = $request["email"]
+        $password = $request["password"]
+        $name = $request["name"]
+        
+        // Check if username exists
+        $existing = $this.user_model.find_by_username($username)
+        menowo dowo($existing) > 0
+            balekno http_error(400, "Username wis digunakake")
+        
+        // Check if email exists
+        $existing_email = $this.user_model.find_by_email($email)
+        menowo dowo($existing_email) > 0
+            balekno http_error(400, "Email wis digunakake")
+        
+        // Create user
+        $data = {
+            "username": $username,
+            "email": $email,
+            "password": $password,
+            "name": $name
+        }
+        
+        $result = $this.user_model.create($data)
+        
+        menowo $result
+            balekno http_json({
+                "message": "Register sukses!",
+                "username": $username
+            })
+        yenora
+            balekno http_error(500, "Register gagal")
+    
+    // Logout
+    garap logout($request)
+        session_destroy()
+        balekno http_json({
+            "message": "Logout sukses"
+        })
+    
+    // Get current user
+    garap me($request)
+        $user_id = session_get("user_id")
+        $user = $this.user_model.find($user_id)
+        
+        menowo dowo($user) > 0
+            $user_data = $user[0]
+            balekno http_json({
+                "user": {
+                    "id": $user_data["id"],
+                    "username": $user_data["username"],
+                    "email": $user_data["email"],
+                    "name": $user_data["name"]
+                }
+            })
+        yenora
+            balekno http_error(404, "User ora ketemu")

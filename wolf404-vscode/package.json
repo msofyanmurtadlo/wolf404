@@ -1,0 +1,48 @@
+{
+  "name": "wolf404-language",
+  "displayName": "Wolf404 Language Support",
+  "description": "Language support and icons for Wolf404 Framework",
+  "version": "1.0.1",
+  "publisher": "wolf404",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "icon": "icon.png",
+  "categories": [
+    "Programming Languages",
+    "Themes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wolf404/wolf404-vscode.git"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "wolf404",
+        "aliases": [
+          "Wolf404",
+          "wolf404"
+        ],
+        "extensions": [
+          ".wlf"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "wolf404",
+        "scopeName": "source.wolf404",
+        "path": "./syntaxes/wolf404.tmLanguage.json"
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "wolf404-icons",
+        "label": "A Wolf404 Icons",
+        "path": "./icons/wolf404-icon-theme.json"
+      }
+    ]
+  }
+}

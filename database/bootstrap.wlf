@@ -1,0 +1,25 @@
+// database/bootstrap.wlf
+
+$init_db = garap($db)
+    ketok("📊 Checking database schema...")
+    $create_table = "CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        name TEXT,
+        role TEXT DEFAULT 'user',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )"
+    db_exec($create_table)
+    
+    // Seed Admin
+    $check_admin = db_query("SELECT * FROM users WHERE username = 'admin'")
+    menowo dowo($check_admin) == 0
+        ketok("🌱 Seeding admin user...")
+        $admin_pass = hash_password("admin123")
+        $create_admin = "INSERT INTO users (username, email, password, name, role) VALUES ('admin', 'admin@wolf404.dev', '" + $admin_pass + "', 'Administrator', 'admin')"
+        db_exec($create_admin)
+        ketok("✅ Admin user created (admin / admin123)")
+
+balekno $init_db

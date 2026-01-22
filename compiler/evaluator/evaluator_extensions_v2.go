@@ -27,7 +27,7 @@ func applyFunction(fn object.Object, args []object.Object) object.Object {
 	case *object.Builtin:
 		return fn.Fn(args...)
 	default:
-		return newError("not a function: %s", fn.Type())
+		return newError("Lha, %s iki dudu fungsi, ojo waton!", fn.Type())
 	}
 }
 

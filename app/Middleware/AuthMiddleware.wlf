@@ -1,0 +1,44 @@
+// app/Middleware/AuthMiddleware.wlf
+// Authentication Middleware - kaya Laravel middleware
+
+gerombolan AuthMiddleware
+    garap init()
+        ketok("🔐 Auth Middleware initialized")
+    
+    // Check if user is authenticated
+    garap handle($request)
+        $user_id = session_get("user_id")
+        
+        menowo $user_id == "kopong"
+            balekno {
+                "error": bener,
+                "code": 401,
+                "message": "Unauthorized - Kudu login dhisik"
+            }
+        
+        // User authenticated
+        balekno {
+            "authenticated": bener,
+            "user_id": $user_id
+        }
+    
+    // Check if user is admin
+    garap is_admin($request)
+        $auth = $this.handle($request)
+        
+        menowo $auth["error"] == bener
+            balekno $auth
+        
+        $role = session_get("role")
+        
+        menowo $role != "admin"
+            balekno {
+                "error": bener,
+                "code": 403,
+                "message": "Forbidden - Kudu admin"
+            }
+        
+        balekno {
+            "authenticated": bener,
+            "is_admin": bener
+        }

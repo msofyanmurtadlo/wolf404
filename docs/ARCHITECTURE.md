@@ -1,5 +1,7 @@
 # Arsitektur & Internal
 
+**Created by ishowpen**
+
 Wolf404 menggunakan _Tree-Walking Interpreter_ yang ditulis dalam bahasa Go.
 
 ## Alur Kerja (Pipeline)

@@ -48,31 +48,31 @@ func (p *Parser) parseBlockStatement() *ast.BlockStatement {
 				p.nextToken()
 				continue
 			}
+
 			stmt := p.parseStatement()
 			if stmt != nil {
 				block.Statements = append(block.Statements, stmt)
 			}
+			
 			p.nextToken()
 		}
 		
-		if p.curToken.Type == lexer.TOKEN_DEDENT {
-			p.nextToken() // consume DEDENT
-		}
+		// Lexer emits DEDENT when indentation decreases. 
+		// Loop terminates at DEDENT. We don't necessarily consume it here 
+		// if the caller loop also does nextToken().
 	} else {
 		// Fallback for single line or no-indent (MVP compliance)
-		// parse single statement
 		stmt := p.parseStatement()
 		if stmt != nil {
 			block.Statements = append(block.Statements, stmt)
 		}
-		p.nextToken() // consume the statement end (?)
 	}
 
 	return block
 }
 
 func (p *Parser) parseHowlExpression() ast.Expression {
-	exp := &ast.CallExpression{Token: p.curToken, Function: &ast.Identifier{Token: p.curToken, Value: "howl"}}
+	exp := &ast.CallExpression{Token: p.curToken, Function: &ast.Identifier{Token: p.curToken, Value: p.curToken.Literal}}
 	
 	if !p.expectPeek(lexer.TOKEN_LPAREN) {
 		return nil

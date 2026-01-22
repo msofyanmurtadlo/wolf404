@@ -1,115 +1,118 @@
-# 🐺 Bahasa Pemrograman Wolf404 (Edisi Jowo Kasar)
+# 🐺 Wolf404 Framework
 
-**Wolf404** adalah bahasa pemrograman modern, terintepretasi, yang dibangun untuk efisiensi, kemudahan baca, dan konkurensi dengan kearifan lokal Jowo Kasar. Bahasa ini merupakan "kimera" yang menggabungkan DNA terbaik dari Python, PHP, dan Go:
+**Created by ishowpen**
 
-- 🐍 **Gampang Diwoco**: Sintaks blok nggo indentasi (Koyo Python).
-- 🐘 **Web-Native**: Variabel nggo tondo `$` & tipe dinamis (Koyo PHP).
-- 🐹 **Playon**: Fitur background job / thread enteng nggo kata kunci `playon` (Koyo Go).
+**Fullstack Web Framework nganggo Bahasa Wolf404 (Jowo) - Kaya Laravel!**
 
-## 🚀 Memulai Cepat
+Ini adalah kerangka kerja (framework) lengkap siap pakai.
 
-### 1. Kompilasi (Build)
+## 📂 Struktur Project
 
-Wolf404 ditulis nganggo Go. Sampeyan kudu nginstall Go nggo mbuild kompilere.
+```
+wolf404/
+├── app/                    # Application Logic
+│   ├── Controllers/        # HTTP Controllers
+│   ├── Middleware/         # Middleware
+│   └── Models/            # Database Models
+├── bootstrap/              # Framework Bootstrap
+├── config/                 # Configuration
+├── database/               # Migrations & Seeds
+├── routes/                 # API Routes declaration
+├── system/                 # Core System Framework
+├── wolf404-vscode/         # VS Code Extension (Icons & Syntax)
+├── compiler/               # Sumber kode interpreter Wolf404 (Go)
+├── server.wlf              # Entry point aplikasi
+├── wlf.exe                 # Binary interpreter Wolf404 (Windows)
+└── README.md               # Dokumentasi iki
+```
+
+## 🎨 VS Code Icons & Syntax
+
+Agar `.wlf` file memiliki logo Wolf404 dan syntax highlighting di editor:
+
+1. Copy folder `wolf404-vscode` ke folder extensions VS Code:
+   `%USERPROFILE%\.vscode\extensions\`
+2. Restart VS Code.
+3. Pilih "Wolf404 Icons" di File > Preferences > File Icon Theme.
+
+## 🌟 Features
+
+- **MVC Architecture**: Controllers (`app/Controllers`), Views (`resources/views`), and Models (`app/Models`).
+- **Tailwind CSS Ready**: Included via CDN in default views for rapid UI development.
+- **Bilingual Syntax**: Write code in **Javanese** (`garap`, `ketok`) or **English** (`hunt`, `howl`).
+- **Artisan-like CLI**: Use `wlf gas server` to start your application.
+- **SQLite Database**: Built-in support for persistent storage.
+
+## 🚀 Cara Jalanke (How to Run)
+
+Sampeyan wis duwe binary `wlf.exe` sing wis dicompile. Langsung gas wae!
+
+### 1. Jalanke Server
+
+Bukak terminal (PowerShell/CMD) neng folder project iki, terus ketik:
+
+```powershell
+.\wlf.exe gas server
+```
+
+Server bakal mlaku neng: `http://localhost:8080`
+
+**Catatan:** Kaya Laravel (`php artisan serve`), yen port wis digunakan, server bakal otomatis ngasih tau lan metu kanthi pesan sing jelas. Ora perlu manual kill process.
+
+### 2. Test API & View
+
+**Halaman Utama (Tailwind CSS):**
+Buka browser: [http://localhost:8080](http://localhost:8080)
+
+**Login API (Contoh):**
 
 ```bash
-cd compiler
-go build -o ../wlf.exe main.go   # Nggo Windows
-# go build -o ../wlf main.go     # Nggo Linux/Mac
-cd ..
+curl -X POST http://localhost:8080/api/auth/login
 ```
 
-### 2. Jalanke Kode Pertama
+## 🛠️ Pengembangan (Development)
 
-Gawe file jenenge `halo.wlf`:
+### Gawe Model & Migration (Laravel-style)
 
-```w404
-ketok("Halo, Cah Serigala!")
+Generate Model dan Migration sekaligus:
 
-$jumlah = 0
-menowo $jumlah < 5
-    ketok("Hitungan ke " + $jumlah)
+```powershell
+.\wlf.exe gawe:model Product
 ```
 
-Jalanke:
+Iki bakal gawe:
 
-```bash
-./wlf gas halo.wlf
+- `app/Models/Product.wlf` - Model file kanthi CRUD methods
+- `database/migrations/TIMESTAMP_create_products_table.wlf` - Migration file
+
+### Nambah Route
+
+Edit file `routes/api.wlf` utowo `routes/web.wlf`.
+
+```wolf404
+$router.get("/api/anyar", garap($req)
+    balekno http_json("Halo saka route anyar!")
+)
 ```
 
-## 🌟 Fitur Unggulan
+### Nambah Model
 
-### Konkurensi (`playon`)
+Gawe file anyar neng `app/Models/`.
 
-Jalanke tugas abot neng background saknaliko tanpa mblokir program utomo.
+### Nambah Controller
 
-```w404
-playon kirim_email("user@contoh.com")
-ketok("Email lagi dikirim neng background...")
-```
+Gawe file anyar neng `app/Controllers/`.
 
-### Sintaks Garap-garapan
+## ⚙️ Setup Environment (Opsional)
 
-Fungsi iku warga kelas siji (_First-class citizens_).
+Yen pengen mbuild ulang interpreter (contone bar ngedit folder `compiler/`):
 
-```w404
-$tambah = garap($a, $b)
-    balekno $a + $b
+1. Pastikan wis install Go.
+2. Jalanke perintah:
+   ```bash
+   go build -o wlf.exe compiler/main.go
+   ```
 
-ketok($tambah(10, 20))
-```
+---
 
-### Perulangan (`baleni`)
-
-Sintaks looping sederhana mirip `while`.
-
-```w404
-$i = 0
-baleni $i < 5
-    ketok("Hitungan " + $i)
-    $i = $i + 1
-```
-
-### OOP (`gerombolan`)
-
-Mendukung Class lan Object Instance (Gerombolan).
-
-```w404
-gerombolan Hero
-    garap serang()
-        ketok("Serangan bertubi-tubi sak enak udele!")
-
-$pahlawan = Hero()
-$pahlawan.serang()
-```
-
-### Struktur Data Modern
-
-Dukungan bawaan nggo Array lan Hash Map (Objek mirip JSON).
-
-```w404
-$profil = {
-    "nama": "Wolfie",
-    "level": 99,
-    "skill": ["gigit", "ketok", "playon"]
-}
-
-ketok($profil["nama"])
-```
-
-## 📚 Dokumentasi
-
-Dokumentasi lengkap kasedhiya neng direktori [docs/](docs/):
-
-- [**Panduan Instalasi**](docs/INSTALLATION.md) - Cara build nggo Windows, Linux, lan macOS.
-- [**Sintaks Boso**](docs/SYNTAX.md) - Sinau variabel, loop, logika if, lan fungsi.
-- [**Pustaka Standar**](docs/STDLIB.md) - Referensi fungsi gowoan.
-- [**Arsitektur**](docs/ARCHITECTURE.md) - Cara kerjo internal Interpreter/Compiler.
-
-## 🤝 Kontribusi
-
-Wolf404 iku proyek sumber terbuka (open-source). Ayo gabung neng kawanan!
-
-## 📄 Lisensi
-
-Lisensi MIT.
+**Wolf404 Framework** - _Coding mumet? Ora masalah, sing penting mlaku!_ 🐺

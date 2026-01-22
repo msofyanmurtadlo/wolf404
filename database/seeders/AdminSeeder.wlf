@@ -1,0 +1,29 @@
+// database/seeders/AdminSeeder.wlf
+// Seeder: Create default admin user
+
+ketok("🌱 Running seeder: AdminSeeder")
+
+// Check if admin already exists
+$existing = db_query("SELECT * FROM users WHERE username = 'admin'")
+
+menowo dowo($existing) > 0
+    ketok("⚠️  Admin user already exists")
+    balekno bener
+
+// Create admin user
+$password = hash_password("admin123")
+
+$sql = "INSERT INTO users (username, email, password, name, role) 
+        VALUES ('admin', 'admin@wolf404.dev', '" + $password + "', 'Administrator', 'admin')"
+
+$result = db_exec($sql)
+
+menowo $result
+    ketok("✅ Admin user created successfully")
+    ketok("   Username: admin")
+    ketok("   Password: admin123")
+    ketok("   ⚠️  Please change the password!")
+yenora
+    ketok("❌ Failed to create admin user")
+
+balekno $result

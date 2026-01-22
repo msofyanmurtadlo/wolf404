@@ -1,0 +1,50 @@
+// system/Router.wlf
+ketok("🔧 Loading Router...")
+
+gerombolan Router
+    garap init()
+        $this.routes = []
+    
+    garap get($path, $handler)
+        $this.add_route("GET", $path, $handler)
+        
+    garap post($path, $handler)
+        $this.add_route("POST", $path, $handler)
+        
+    garap add_route($method, $path, $handler)
+        $route = {
+            "method": $method,
+            "path": $path,
+            "handler": $handler
+        }
+        plumbungan($this.routes, $route)
+        
+    garap handle($request)
+        $method = $request["metode"]
+        $path = $request["path"]
+        
+        // Serve static files from public directory
+        menowo $path == "/logo.png"
+            balekno moco_file("public/logo.png")
+        menowo $path == "/logo.ico"
+            balekno moco_file("public/logo.ico")
+        
+        $i = 0
+        $len = dowo($this.routes)
+        
+        track ($i < $len)
+            $route = $this.routes[$i]
+            
+            menowo $route["method"] == $method
+                menowo $route["path"] == $path
+                    $handler = $route["handler"]
+                    balekno $handler($request)
+                
+            $i = $i + 1
+        
+        // Default 404 response
+        menowo string_contains($path, "/api/")
+            balekno http_error(404, "Route ora ketemu")
+        yenora
+            balekno "<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>The page you are looking for could not be found.</p></body></html>"
+

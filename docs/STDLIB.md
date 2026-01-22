@@ -1,5 +1,7 @@
 # Pustaka Standar (Standard Library) - Edisi Jowo Kasar
 
+**Created by ishowpen**
+
 Wolf404 digowo nganggo pirang-pirang fungsi gowoan sing iso langsung dinggo.
 
 ## Fungsi Inti

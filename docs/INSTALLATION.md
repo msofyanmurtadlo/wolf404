@@ -1,5 +1,7 @@
 # Panduan Instalasi & Kompilasi
 
+**Created by ishowpen**
+
 Wolf404 adalah _toolchain_ bahasa yang ditulis dengan Go. Artinya, konsep "Single Binary Deployment" berlaku di sini. Anda bisa membuat (build) program di satu komputer dan menjalankannya di komputer lain tanpa perlu menginstal runtime tambahan.
 
 ## Prasyarat

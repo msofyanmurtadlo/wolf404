@@ -15,7 +15,6 @@ func evalClassStatement(node *ast.ClassStatement, env *object.Environment) objec
 		if exprStmt, ok := stmt.(*ast.ExpressionStatement); ok {
 			if funcLit, ok := exprStmt.Expression.(*ast.FunctionLiteral); ok {
 				// It's a method definition
-				// Eval creates the function object
 				obj := Eval(funcLit, env)
 				if fn, ok := obj.(*object.Function); ok {
 					methods[funcLit.Name] = fn
@@ -59,21 +58,24 @@ func evalDotExpression(node *ast.InfixExpression, env *object.Environment) objec
 
 	rightIdent, ok := node.Right.(*ast.Identifier)
 	if !ok {
-		return newError("expected identifier as property name")
+		return newError("property access must be an identifier")
 	}
-	key := rightIdent.Value
 
 	if instance, ok := left.(*object.Instance); ok {
-		if val, ok := instance.Fields[key]; ok {
+		// Field access
+		if val, ok := instance.Fields[rightIdent.Value]; ok {
 			return val
 		}
-		// Recursive method lookup
-		if method := findMethod(instance.Class, key); method != nil {
-			return &object.BoundMethod{Method: method, Instance: instance}
+
+		// Method lookup
+		if method := findMethod(instance.Class, rightIdent.Value); method != nil {
+			return &object.BoundMethod{Instance: instance, Method: method}
 		}
+
+		return newError("property %s not found on INSTANCE", rightIdent.Value)
 	}
 
-	return newError("property %s not found on %s", key, left.Type())
+	return newError("cannot access property of non-instance: %s", left.Type())
 }
 
 func evalAssignmentExpression(node *ast.InfixExpression, env *object.Environment) object.Object {
@@ -82,21 +84,22 @@ func evalAssignmentExpression(node *ast.InfixExpression, env *object.Environment
 		return val
 	}
 
-	if ident, ok := node.Left.(*ast.Identifier); ok {
-		env.Set(ident.Value, val)
+	// Case 1: Simple identifier variable assignment ($a = 1)
+	if leftIdent, ok := node.Left.(*ast.Identifier); ok {
+		env.Set(leftIdent.Value, val)
 		return val
 	}
 
-	// Dot Assignment support ($obj.prop = val)
-	if infixLeft, ok := node.Left.(*ast.InfixExpression); ok && infixLeft.Operator == "." {
-		target := Eval(infixLeft.Left, env)
+	// Case 2: Property assignment (obj.prop = 1)
+	if leftInfix, ok := node.Left.(*ast.InfixExpression); ok && leftInfix.Operator == "." {
+		target := Eval(leftInfix.Left, env)
 		if isError(target) {
 			return target
 		}
 
-		propNameIdent, ok := infixLeft.Right.(*ast.Identifier)
+		propNameIdent, ok := leftInfix.Right.(*ast.Identifier)
 		if !ok {
-			return newError("expected property name")
+			return newError("property name must be identifier")
 		}
 
 		if instance, ok := target.(*object.Instance); ok {
