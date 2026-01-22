@@ -1,22 +1,12 @@
 // server.wlf - Entry Point
-// server.wlf - Entry Point
-ketok(" __      __      .__  _____  0_0  ")
-ketok("/  \\    /  \\____ |  |/ ____\\/   \\ ")
-ketok("\\   \\/\\/   /  _ \\|  |   __\\/  |  \\")
-ketok(" \\        (  <_> )  ||  |  \\  |  /")
-ketok("  \\__/\\  / \\____/|__||__|   \\___/ ")
-ketok("       \\/                         ")
-ketok("🐺 Wolf404 Framework v1.0")
-ketok("Created by ishowpen")
-ketok("=========================")
+// Created by ishowpen
 
+ketok("")
+ketok("   Wolf404 Development Server")
+ketok("")
 
 // Bootstrap Application
 $app = nganggo("bootstrap/app.wlf")
 
 // Start Server
-ketok("")
-ketok("🚀 Server started on port " + string($APP_PORT))
-ketok("📡 Listening...")
-
 layani_web($APP_PORT, $app)

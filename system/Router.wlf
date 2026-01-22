@@ -1,5 +1,5 @@
 // system/Router.wlf
-ketok("🔧 Loading Router...")
+
 
 gerombolan Router
     garap init()

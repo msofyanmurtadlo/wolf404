@@ -1,5 +1,4 @@
 // bootstrap/app.wlf
-ketok("⚙️  Bootstrapping application...")
 
 // Load Config
 nganggo("config/app.wlf")
@@ -9,7 +8,7 @@ nganggo("config/database.wlf")
 nganggo("system/Router.wlf")
 $view = nganggo("system/Helpers.wlf")
 
-// Load Core Component Files (Manual Autoloading)
+// Load Core Component Files
 nganggo("app/Models/User.wlf")
 nganggo("app/Middleware/AuthMiddleware.wlf")
 nganggo("app/Controllers/AuthController.wlf")
@@ -17,12 +16,7 @@ nganggo("app/Controllers/UserController.wlf")
 nganggo("app/Controllers/HomeController.wlf")
 
 // Initialize Database
-ketok("🗄️  Connecting to database:", $DB_PATH)
 $db = db_connect($DB_PATH)
-
-// Run Migrations/Seeds
-$init_db = nganggo("database/bootstrap.wlf")
-$init_db($db)
 
 // Initialize Router
 $router = Router()
@@ -34,7 +28,6 @@ $register_web = nganggo("routes/web.wlf")
 // Register Routes
 $register_api($router, $db)
 $register_web($router, $db, $view)
-
 
 // Create Application Handler
 $app_handler = garap($request)

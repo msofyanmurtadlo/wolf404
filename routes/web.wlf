@@ -1,8 +1,8 @@
 // routes/web.wlf
 
 
+
 $register_web_routes = garap($router, $db, $view)
-    ketok("🌐 Registering web routes...")
     
     // Dependencies
     $home_controller = HomeController($view)
