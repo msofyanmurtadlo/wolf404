@@ -146,7 +146,19 @@ func init() {
 					})
 				}
 
-				// 2. Resolve @warisan (Extend) and @bagean (Section)
+				// 2. STACKS logic (Extract @tumpuk before @warisan)
+				stacks := make(map[string][]string)
+				rePush := regexp.MustCompile(`(?s)@tumpuk\s*\(\"(.*?)\"\)(.*?)@punkyan_tumpuk`)
+				matchesPush := rePush.FindAllStringSubmatch(raw, -1)
+				for _, m := range matchesPush {
+					name := m[1]
+					content := m[2]
+					stacks[name] = append(stacks[name], content)
+				}
+				// Remove push blocks from raw content
+				raw = rePush.ReplaceAllString(raw, "")
+
+				// 3. Resolve @warisan (Extend) and @bagean (Section)
 				reExtend := regexp.MustCompile(`@warisan\s*\(\"(.*?)\"\)`)
 				if reExtend.MatchString(raw) {
 					layoutName := reExtend.FindStringSubmatch(raw)[1]
@@ -161,8 +173,10 @@ func init() {
 							sections[m[1]] = m[2]
 						}
 
-						// Replace @panggonan (Yield) in layout
+						// Replace @panggonan (Yield) and @papan_tumpukan (Stack) in layout
 						finalRaw := string(layoutContent)
+
+						// Yields
 						reYield := regexp.MustCompile(`@panggonan\s*\(\"(.*?)\"\)`)
 						finalRaw = reYield.ReplaceAllStringFunc(finalRaw, func(m string) string {
 							name := reYield.FindStringSubmatch(m)[1]
@@ -171,11 +185,32 @@ func init() {
 							}
 							return ""
 						})
+
+						// Stacks
+						reStack := regexp.MustCompile(`@papan_tumpukan\s*\(\"(.*?)\"\)`)
+						finalRaw = reStack.ReplaceAllStringFunc(finalRaw, func(m string) string {
+							name := reStack.FindStringSubmatch(m)[1]
+							if contents, ok := stacks[name]; ok {
+								return strings.Join(contents, "\n")
+							}
+							return ""
+						})
+
 						raw = finalRaw
 					}
+				} else {
+					// If no warisan, still try to resolve papan_tumpukan in the current file
+					reStack := regexp.MustCompile(`@papan_tumpukan\s*\(\"(.*?)\"\)`)
+					raw = reStack.ReplaceAllStringFunc(raw, func(m string) string {
+						name := reStack.FindStringSubmatch(m)[1]
+						if contents, ok := stacks[name]; ok {
+							return strings.Join(contents, "\n")
+						}
+						return ""
+					})
 				}
 
-				// 3. Javanese-Blade Compiler logic
+				// 4. Javanese-Blade Compiler logic
 				token := "kopong"
 				if t, ok := sessions["_token"]; ok {
 					token = t.Inspect()
@@ -199,7 +234,6 @@ func init() {
 
 				for _, line := range lines {
 					trimmed := strings.TrimSpace(line)
-					// Avoid escaping Wolf404 logic lines
 					if strings.HasPrefix(trimmed, "menowo") || strings.HasPrefix(trimmed, "track") || trimmed == "}" || strings.HasSuffix(trimmed, "}") || trimmed == "" {
 						buffer.WriteString(line + "\n")
 					} else {

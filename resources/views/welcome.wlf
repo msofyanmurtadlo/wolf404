@@ -31,3 +31,9 @@
         </div>
     </div>
 @punkyan_bagean
+
+@tumpuk("scripts")
+    <script>
+        console.log("🐺 Sugeng rawuh neng Wolf404!");
+    </script>
+@punkyan_tumpuk
