@@ -2,81 +2,83 @@
 
 **Created by ishowpen**
 
-**Fullstack Web Framework nganggo Bahasa Wolf404 (Jowo) - Kaya Laravel!**
+**Framework Web Fullstack menggunakan Bahasa Wolf404 (Jawa) - Seperti Laravel!**
 
-Ini adalah kerangka kerja (framework) lengkap siap pakai.
+Ini adalah kerangka kerja (framework) lengkap yang siap digunakan untuk membangun aplikasi web modern dengan kearifan lokal.
 
-## 📂 Struktur Project
+## 📂 Struktur Proyek
 
 ```
 wolf404/
-├── app/                    # Application Logic
-│   ├── Controllers/        # HTTP Controllers
+├── app/                    # Logika Aplikasi
+│   ├── Controllers/        # Controller HTTP
 │   ├── Middleware/         # Middleware
-│   └── Models/            # Database Models
-├── bootstrap/              # Framework Bootstrap
-├── config/                 # Configuration
-├── database/               # Migrations & Seeds
-├── routes/                 # API Routes declaration
+│   └── Models/             # Model Database
+├── bootstrap/              # Bootstrap Framework
+├── config/                 # Konfigurasi
+├── database/               # Migrasi & Seed
+├── routes/                 # Deklarasi Route API & Web
 ├── system/                 # Core System Framework
-├── wolf404-vscode/         # VS Code Extension (Icons & Syntax)
-├── compiler/               # Sumber kode interpreter Wolf404 (Go)
+├── wolf404-vscode/         # VS Code Extension (Ikon & Syntax)
+├── compiler/               # Kode sumber interpreter Wolf404 (Go)
 ├── server.wlf              # Entry point aplikasi
 ├── wlf.exe                 # Binary interpreter Wolf404 (Windows)
-└── README.md               # Dokumentasi iki
+└── README.md               # Dokumentasi ini
 ```
 
 ## 🎨 VS Code Icons & Syntax
 
-Agar `.wlf` file memiliki logo Wolf404 dan syntax highlighting di editor:
+Agar file `.wlf` memiliki logo Wolf404 dan fitur syntax highlighting di editor:
 
-### Auto Install (Recommended)
+### Instalasi Otomatis (Direkomendasikan)
+
+Gunakan perintah PowerShell berikut untuk menginstal ekstensi VS Code secara otomatis:
 
 ```powershell
 Copy-Item -Recurse -Force "wolf404-vscode" "$env:USERPROFILE\.vscode\extensions\wolf404-language-1.0.1"
 ```
 
-### Manual Install
+### Instalasi Manual
 
-1. Copy folder `wolf404-vscode` ke: `%USERPROFILE%\.vscode\extensions\wolf404-language-1.0.1`
-2. Restart VS Code
-3. **Aktifkan Icon Theme**:
-   - Press `Ctrl+Shift+P`
+1. Salin folder `wolf404-vscode` ke direktori ekstensi VS Code: `%USERPROFILE%\.vscode\extensions\wolf404-language-1.0.1`
+2. Restart VS Code.
+3. **Aktifkan Tema Ikon**:
+   - Tekan `Ctrl+Shift+P`
    - Ketik "File Icon Theme"
    - Pilih "**A Wolf404 Icons**"
 
-Setelah itu, semua file `.wlf` akan menampilkan logo Wolf404! 🐺
+Setelah itu, semua file dengan ekstensi `.wlf` akan menampilkan logo Wolf404! 🐺
 
-## 🌟 Features
+## 🌟 Fitur Utama
 
-- **MVC Architecture**: Controllers (`app/Controllers`), Views (`resources/views`), and Models (`app/Models`).
-- **Tailwind CSS Ready**: Included via CDN in default views for rapid UI development.
-- **Bilingual Syntax**: Write code in **Javanese** (`garap`, `ketok`) or **English** (`hunt`, `howl`).
-- **Artisan-like CLI**: Use `wlf gas server` to start your application.
-- **SQLite Database**: Built-in support for persistent storage.
+- **Arsitektur MVC**: Terbagi menjadi Controller (`app/Controllers`), View (`resources/views`), dan Model (`app/Models`).
+- **Siap Pakai Tailwind CSS**: Sudah termasuk via CDN pada tampilan default untuk pengembangan UI yang cepat.
+- **Sintaks Bilingual**: Anda dapat menulis kode dalam bahasa **Jawa** (`garap`, `ketok`) atau **Inggris** (`hunt`, `howl`).
+- **CLI Seperti Artisan**: Gunakan perintah `wlf gas server` untuk menjalankan aplikasi Anda.
+- **Database SQLite**: Dukungan bawaan untuk penyimpanan data yang persisten.
 
-## 🚀 Cara Jalanke (How to Run)
+## 🚀 Cara Menjalankan (How to Run)
 
-Sampeyan wis duwe binary `wlf.exe` sing wis dicompile. Langsung gas wae!
+Anda sudah memiliki binary `wlf.exe` yang sudah dikompilasi. Anda bisa langsung menjalankannya!
 
-### 1. Jalanke Server
+### 1. Menjalankan Server
 
-Bukak terminal (PowerShell/CMD) neng folder project iki, terus ketik:
+Buka terminal (PowerShell/CMD) di folder proyek ini, lalu ketik:
 
 ```powershell
 .\wlf.exe gas server
 ```
 
-Server bakal mlaku neng: `http://localhost:8080`
+Server akan berjalan di: `http://localhost:8080`
 
-**Catatan:** Kaya Laravel (`php artisan serve`), yen port wis digunakan, server bakal otomatis ngasih tau lan metu kanthi pesan sing jelas. Ora perlu manual kill process.
+**Catatan:** Seperti Laravel (`php artisan serve`), jika port sudah digunakan, server akan otomatis memberikan peringatan dan berhenti dengan pesan yang jelas. Anda tidak perlu mematikan proses secara manual.
 
-### 2. Test API & View
+### 2. Uji Coba API & Tampilan
 
 **Halaman Utama (Tailwind CSS):**
-Buka browser: [http://localhost:8080](http://localhost:8080)
+Buka browser dan akses: [http://localhost:8080](http://localhost:8080)
 
-**Login API (Contoh):**
+**API Login (Contoh):**
 
 ```bash
 curl -X POST http://localhost:8080/api/auth/login
@@ -84,47 +86,47 @@ curl -X POST http://localhost:8080/api/auth/login
 
 ## 🛠️ Pengembangan (Development)
 
-### Gawe Model & Migration (Laravel-style)
+### Membuat Model & Migrasi (Gaya Laravel)
 
-Generate Model dan Migration sekaligus:
+Anda dapat membuat Model dan Migrasi sekaligus dengan satu perintah:
 
 ```powershell
-.\wlf.exe gawe:model Product
+.\wlf.exe gawe:model NamaModel
 ```
 
-Iki bakal gawe:
+Perintah ini akan secara otomatis membuat:
 
-- `app/Models/Product.wlf` - Model file kanthi CRUD methods
-- `database/migrations/TIMESTAMP_create_products_table.wlf` - Migration file
+- `app/Models/NamaModel.wlf` - File Model dengan metode CRUD dasar.
+- `database/migrations/TIMESTAMP_create_table.wlf` - File Migrasi untuk tabel terkait.
 
-### Nambah Route
+### Menambah Route
 
-Edit file `routes/api.wlf` utowo `routes/web.wlf`.
+Edit file `routes/api.wlf` atau `routes/web.wlf`.
 
 ```wolf404
-$router.get("/api/anyar", garap($req)
-    balekno http_json("Halo saka route anyar!")
+$router.get("/api/baru", garap($req)
+    balekno http_json("Halo dari route baru!")
 )
 ```
 
-### Nambah Model
+### Menambah Model Baru
 
-Gawe file anyar neng `app/Models/`.
+Buat file baru di direktori `app/Models/`.
 
-### Nambah Controller
+### Menambah Controller Baru
 
-Gawe file anyar neng `app/Controllers/`.
+Buat file baru di direktori `app/Controllers/`.
 
 ## ⚙️ Setup Environment (Opsional)
 
-Yen pengen mbuild ulang interpreter (contone bar ngedit folder `compiler/`):
+Jika Anda ingin membangun ulang interpreter (misalnya setelah mengubah kode di folder `compiler/`):
 
-1. Pastikan wis install Go.
-2. Jalanke perintah:
+1. Pastikan Go sudah terinstal di sistem Anda.
+2. Jalankan perintah berikut:
    ```bash
    go build -o wlf.exe compiler/main.go
    ```
 
 ---
 
-**Wolf404 Framework** - _Coding mumet? Ora masalah, sing penting mlaku!_ 🐺
+**Wolf404 Framework** - _Coding pusing? Tidak masalah, yang penting jalan!_ 🐺
