@@ -11,6 +11,7 @@ $view = nganggo("system/Helpers.wlf")
 // Load Core Component Files
 nganggo("app/Models/User.wlf")
 nganggo("app/Middleware/AuthMiddleware.wlf")
+nganggo("app/Middleware/VerifyCsrfToken.wlf")
 nganggo("app/Controllers/AuthController.wlf")
 nganggo("app/Controllers/UserController.wlf")
 nganggo("app/Controllers/HomeController.wlf")

@@ -1,0 +1,23 @@
+// app/Middleware/VerifyCsrfToken.wlf
+
+gerombolan VerifyCsrfToken
+    garap handle($request)
+        $method = $request["metode"]
+        
+        // Skip GET, HEAD, OPTIONS
+        menowo $method == "GET"
+            balekno {"error": palsu}
+            
+        $token = session_get("_token")
+        $input_token = $request["input"]["_token"]
+        
+        menowo $token != $input_token
+            balekno {
+                "error": bener,
+                "code": 419,
+                "message": "Page Expired - CSRF Token ora pas (Mungkin session wis entek)"
+            }
+            
+        balekno {"error": palsu}
+
+balekno VerifyCsrfToken()

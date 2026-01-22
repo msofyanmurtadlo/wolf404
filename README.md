@@ -54,8 +54,10 @@ Setelah itu, semua file dengan ekstensi `.wlf` akan menampilkan logo Wolf404! ðŸ
 - **Arsitektur MVC**: Terbagi menjadi Controller (`app/Controllers`), View (`resources/views`), dan Model (`app/Models`).
 - **Real Database Engine**: Menggunakan SQLite asli (via `database/sql`) bukan simulasi. Mendukung penyimpanan data persisten.
 - **Keamanan SQL**: Mendukung prepared statements (`?` placeholders) untuk mencegah SQL Injection secara otomatis.
+- **CSRF Protection**: Melindungi route POST dari serangan Cross-Site Request Forgery menggunakan token dinamis (`@csrf`).
 - **Dynamic Routing**: Mendukung parameter dinamis dalam route (contoh: `/api/users/{id}`).
-- **Template Engine (Blade-style)**: Mendukung injeksi variabel ke dalam tampilan menggunakan sintaks `{{ variabel }}`.
+- **Template Engine (Blade-style)**: Mendukung injeksi variabel (`{{ variabel }}`) dan direktif keamanan (`@csrf`).
+- **XSS Protection**: Auto-escaping otomatis pada semua output template.
 - **Sintaks Bilingual**: Anda dapat menulis kode dalam bahasa **Jawa** (`garap`, `ketok`) atau **Inggris** (`hunt`, `howl`).
 - **CLI Seperti Artisan**: Gunakan perintah `wlf gas server` untuk menjalankan aplikasi Anda.
 

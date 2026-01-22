@@ -1,7 +1,9 @@
 package evaluator
 
 import (
+	"crypto/rand"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"html"
@@ -166,6 +168,13 @@ func init() {
 					return newError("html_escape butuhe 1 argumen")
 				}
 				return &object.String{Value: html.EscapeString(args[0].Inspect())}
+			},
+		},
+		"generate_token": {
+			Fn: func(args ...object.Object) object.Object {
+				b := make([]byte, 16)
+				rand.Read(b)
+				return &object.String{Value: hex.EncodeToString(b)}
 			},
 		},
 		"keys": {

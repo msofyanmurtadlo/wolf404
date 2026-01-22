@@ -4,6 +4,15 @@ $view = garap($name, $data)
     $path = "resources/views/" + $name + ".wlf"
     $template = moco_file($path)
     
+    // CSRF Token logic
+    $token = session_get("_token")
+    menowo $token == "kopong"
+        $token = generate_token()
+        session_set("_token", $token)
+    
+    // Replace CSRF placeholder
+    $template = string_replace($template, "@csrf", "<input type='hidden' name='_token' value='" + $token + "'>")
+    
     // Menowo $data kuwi kopong, langsung balekno template
     menowo $data == kopong
         balekno $template
