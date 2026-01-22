@@ -47,7 +47,7 @@ Upload file `wlf_linux` ke server Ubuntu/CentOS/Debian Anda dan jalankan:
 
 ```bash
 chmod +x wlf_linux
-./wlf_linux run script_saya.wlf
+./wlf_linux gas script_saya.wlf
 ```
 
 ### Build untuk macOS (Apple Silicon M1/M2)

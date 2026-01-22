@@ -1,84 +1,92 @@
-# Sintaks Bahasa Wolf404
+# Sintaks Bahasa Wolf404 (Edisi Jowo Kasar)
 
 ## Variabel
 
-Semua variabel dimulai dengan tanda `$`, mirip dengan PHP.
+Kabeh variabel diwiwiti nganggo tondo `$`, koyo PHP.
 
 ```w404
-$nama = "Alpha"
+$jeneng = "Alpha"
 $umur = 10
-$aktif = true
-$kosong = nil
+$aktif = bener
+$kosong = kopong
 ```
 
 ## Struktur Data
 
 ### Array (Larik)
 
-Daftar berurutan dimulai dari indeks 0.
-
 ```w404
-$angka = [10, 20, 30]
-howl($angka[0]) // Mencetak 10
+$nomer = [10, 20, 30]
+ketok($nomer[0])
 ```
 
 ### Hash Maps (Objek)
 
-Penyimpanan Key-Value (mirip JSON).
-
 ```w404
 $profil = {
-    "username": "wolf123",
-    "peran": "admin"
+    "user": "wolf123",
+    "status": "admin"
 }
-howl($profil["username"])
+ketok($profil["user"])
 ```
 
-## Fungsi (`hunt`)
+## Fungsi (`garap`)
 
-Fungsi didefinisikan menggunakan kata kunci `hunt`. Fungsi bisa disimpan ke dalam variabel.
+Gawe fungsi nganggo tembung `garap`. Hasil ditokne nganggo `balekno`.
 
 ```w404
-// Fungsi anonim disimpan ke variabel
-$sapa = hunt($nama)
-    howl("Halo " + $nama)
+$sapa = garap($name)
+    ketok("Halo " + $name)
 
-$sapa("Luna")
-
-// Fungsi dengan nilai kembalian ('bring')
-$tambah = hunt($a, $b)
-    bring $a + $b
-
-$hasil = $tambah(5, 5)
+$tambah = garap($a, $b)
+    balekno $a + $b
 ```
 
-## Alur Kontrol (Control Flow)
+## Alur Kontrol
 
-### Sniff (If-Else)
+### Menowo (If-Else)
 
-Menggunakan kata kunci `sniff`. Blok kode ditentukan oleh **indentasi** (gaya Python).
+Nganggo `menowo` lan `yenora`. Blok kode diatur nganggo **indentasi**.
 
 ```w404
-$kekuatan = 9000
+$tenogo = 9000
 
-sniff $kekuatan > 8000
-    howl("It's over 9000!")   // Blok ter-indentasi
-missing
-    howl("Kelemahan terdeteksi.") // Blok Else (missing)
+menowo $tenogo > 8000
+    ketok("Sakti banget!")
+yenora
+    ketok("Cemen.")
 ```
 
-## Konkurensi (`prowl`)
+### Baleni (Loop)
 
-Jalankan fungsi di latar belakang (_background_) menggunakan `prowl`.
+Nganggo tembung `baleni`.
 
 ```w404
-$tugas_cepat = hunt()
-    howl("Tugas cepat selesai")
+$i = 0
+baleni $i < 5
+    ketok("Angka: " + $i)
+    $i = $i + 1
+```
 
-$tugas_berat = hunt()
-    // simulasi kerja berat...
-    howl("Tugas berat selesai")
+## Pemrograman Berorientasi Objek (`gerombolan`)
 
-prowl $tugas_berat() // Jalan di background (async)
-$tugas_cepat()       // Jalan di foreground (sync)
+```w404
+gerombolan Kucing
+    garap init($jeneng)
+        $this.jeneng = $jeneng
+
+    garap suara()
+        ketok($this.jeneng + " muni: Meong!")
+
+$tom = Kucing("Tom")
+$tom.suara()
+```
+
+## Konkurensi (`playon`)
+
+Jalanke fungsi neng background nganggo `playon`.
+
+```w404
+playon tugas_abot()
+ketok("Tugas jalan neng mburi...")
 ```

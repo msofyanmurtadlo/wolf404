@@ -9,8 +9,8 @@ import (
 
 func main() {
 	if len(os.Args) < 2 {
-		printUsage()
-		os.Exit(1)
+		cmd.RunREPL()
+		return
 	}
 
 	command := os.Args[1]
@@ -18,7 +18,7 @@ func main() {
 	switch command {
 	case "init":
 		cmd.InitProject(os.Args[2:])
-	case "run":
+	case "gas":
 		cmd.RunFile(os.Args[2:])
 	case "build":
 		cmd.BuildFile(os.Args[2:])
@@ -41,7 +41,7 @@ func printUsage() {
 	fmt.Println("🐺 Wolf404 Compiler v0.1.0")
 	fmt.Println("\nUsage:")
 	fmt.Println("  wlf init <project-name>       Create new Wolf404 project")
-	fmt.Println("  wlf run <file.wlf>            Run Wolf404 file in dev mode")
+	fmt.Println("  wlf gas <file.wlf>            Run Wolf404 file in dev mode")
 	fmt.Println("  wlf build <file.wlf>          Build executable binary")
 	fmt.Println("  wlf pack add <package>        Add package to project")
 	fmt.Println("  wlf test                      Run tests")
@@ -49,6 +49,6 @@ func printUsage() {
 	fmt.Println("  wlf version                   Show version")
 	fmt.Println("\nExamples:")
 	fmt.Println("  wlf init my-web-app")
-	fmt.Println("  wlf run main.wlf")
+	fmt.Println("  wlf gas main.wlf")
 	fmt.Println("  wlf build main.wlf -o app")
 }

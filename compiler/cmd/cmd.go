@@ -9,7 +9,14 @@ import (
 	"wolf404/compiler/lexer"
 	"wolf404/compiler/object"
 	"wolf404/compiler/parser"
+	"wolf404/compiler/repl"
 )
+
+func RunREPL() {
+	fmt.Println("🐺 Wolf404 v1.1 Interactive Shell")
+	fmt.Println("Type commands to evaluate them.")
+	repl.Start(os.Stdin, os.Stdout)
+}
 
 func InitProject(args []string) {
 	if len(args) == 0 {

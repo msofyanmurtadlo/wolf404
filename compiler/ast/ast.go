@@ -143,6 +143,24 @@ func (bs *BlockStatement) String() string {
 	return out.String()
 }
 
+type ClassStatement struct {
+	Token      lexer.Token // 'mold'
+	Name       *Identifier
+	SuperClass *Identifier // For inheritance
+	Body       *BlockStatement
+}
+
+func (cs *ClassStatement) statementNode()       {}
+func (cs *ClassStatement) TokenLiteral() string { return cs.Token.Literal }
+func (cs *ClassStatement) String() string {
+	var out bytes.Buffer
+	out.WriteString("mold ")
+	out.WriteString(cs.Name.String())
+	out.WriteString(" ")
+	out.WriteString(cs.Body.String())
+	return out.String()
+}
+
 type ProwlStatement struct {
 	Token lexer.Token // 'prowl'
 	Call  Expression  // The function call
@@ -156,6 +174,23 @@ func (ps *ProwlStatement) String() string {
 	if ps.Call != nil {
 		out.WriteString(ps.Call.String())
 	}
+	return out.String()
+}
+
+type TrackStatement struct {
+	Token     lexer.Token // 'track'
+	Condition Expression
+	Body      *BlockStatement
+}
+
+func (ts *TrackStatement) statementNode()       {}
+func (ts *TrackStatement) TokenLiteral() string { return ts.Token.Literal }
+func (ts *TrackStatement) String() string {
+	var out bytes.Buffer
+	out.WriteString("track ")
+	out.WriteString(ts.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(ts.Body.String())
 	return out.String()
 }
 

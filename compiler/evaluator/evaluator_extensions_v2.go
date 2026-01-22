@@ -12,11 +12,30 @@ func applyFunction(fn object.Object, args []object.Object) object.Object {
 		extendedEnv := extendFunctionEnv(fn, args)
 		evaluated := Eval(fn.Body, extendedEnv)
 		return unwrapReturnValue(evaluated)
+	case *object.Class:
+		instance := &object.Instance{Class: fn, Fields: make(map[string]object.Object)}
+		if init, ok := fn.Methods["init"]; ok {
+			// Call init with instance as $this
+			val := applyMethod(init, args, instance)
+			if isError(val) {
+				return val
+			}
+		}
+		return instance
+	case *object.BoundMethod:
+		return applyMethod(fn.Method, args, fn.Instance)
 	case *object.Builtin:
 		return fn.Fn(args...)
 	default:
 		return newError("not a function: %s", fn.Type())
 	}
+}
+
+func applyMethod(fn *object.Function, args []object.Object, instance *object.Instance) object.Object {
+	extendedEnv := extendFunctionEnv(fn, args)
+	extendedEnv.Set("this", instance)
+	evaluated := Eval(fn.Body, extendedEnv)
+	return unwrapReturnValue(evaluated)
 }
 
 func extendFunctionEnv(fn *object.Function, args []object.Object) *object.Environment {

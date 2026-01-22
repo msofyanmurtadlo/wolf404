@@ -37,6 +37,8 @@ func evalIndexExpression(left, index object.Object) object.Object {
 		return evalArrayIndexExpression(left, index)
 	case left.Type() == object.HASH_OBJ:
 		return evalHashIndexExpression(left, index)
+	case left.Type() == object.INSTANCE_OBJ:
+		return evalInstanceIndexExpression(left, index)
 	default:
 		return newError("index operator not supported: %s", left.Type())
 	}
@@ -52,6 +54,20 @@ func evalArrayIndexExpression(array, index object.Object) object.Object {
 	}
 
 	return arrayObject.Elements[idx]
+}
+
+func evalInstanceIndexExpression(instance, index object.Object) object.Object {
+	inst := instance.(*object.Instance)
+	key, ok := index.(*object.String)
+	if !ok {
+		return newError("index for instance must be string")
+	}
+
+	val, ok := inst.Fields[key.Value]
+	if !ok {
+		return NULL
+	}
+	return val
 }
 
 func evalHashIndexExpression(hash, index object.Object) object.Object {

@@ -1,90 +1,114 @@
-# 🐺 Bahasa Pemrograman Wolf404
+# 🐺 Bahasa Pemrograman Wolf404 (Edisi Jowo Kasar)
 
-**Wolf404** adalah bahasa pemrograman modern, terintepretasi, yang dibangun untuk efisiensi, kemudahan baca, dan konkurensi. Bahasa ini merupakan "kimera" yang menggabungkan DNA terbaik dari Python, PHP, dan Go:
+**Wolf404** adalah bahasa pemrograman modern, terintepretasi, yang dibangun untuk efisiensi, kemudahan baca, dan konkurensi dengan kearifan lokal Jowo Kasar. Bahasa ini merupakan "kimera" yang menggabungkan DNA terbaik dari Python, PHP, dan Go:
 
-- 🐍 **Mudah Dibaca**: Sintaks blok berbasis indentasi (Gaya Python).
-- 🐘 **Web-Native**: Variabel dengan awalan `$` & tipe dinamis (Gaya PHP).
-- 🐹 **Konkuren**: Thread ringan bawaan dengan kata kunci `prowl` (Gaya Go).
+- 🐍 **Gampang Diwoco**: Sintaks blok nggo indentasi (Koyo Python).
+- 🐘 **Web-Native**: Variabel nggo tondo `$` & tipe dinamis (Koyo PHP).
+- 🐹 **Playon**: Fitur background job / thread enteng nggo kata kunci `playon` (Koyo Go).
 
 ## 🚀 Memulai Cepat
 
 ### 1. Kompilasi (Build)
 
-Wolf404 ditulis dengan Go. Anda perlu menginstal Go untuk membangun kompilernya.
+Wolf404 ditulis nganggo Go. Sampeyan kudu nginstall Go nggo mbuild kompilere.
 
 ```bash
 cd compiler
-go build -o ../wlf.exe main.go   # Untuk Windows
-# go build -o ../wlf main.go     # Untuk Linux/Mac
+go build -o ../wlf.exe main.go   # Nggo Windows
+# go build -o ../wlf main.go     # Nggo Linux/Mac
 cd ..
 ```
 
-### 2. Jalankan Kode Pertama Anda
+### 2. Jalanke Kode Pertama
 
-Buat file bernama `halo.wlf`:
+Gawe file jenenge `halo.wlf`:
 
 ```w404
-howl("Halo, Kawanan Serigala!")
+ketok("Halo, Cah Serigala!")
 
 $jumlah = 0
-sniff $jumlah < 5
-    howl("Hitungan ke " + $jumlah)
+menowo $jumlah < 5
+    ketok("Hitungan ke " + $jumlah)
 ```
 
-Jalankan:
+Jalanke:
 
 ```bash
-./wlf run halo.wlf
+./wlf gas halo.wlf
 ```
 
 ## 🌟 Fitur Unggulan
 
-### Konkurensi (`prowl`)
+### Konkurensi (`playon`)
 
-Jalankan tugas berat di latar belakang secara instan tanpa memblokir program utama.
+Jalanke tugas abot neng background saknaliko tanpa mblokir program utomo.
 
 ```w404
-prowl kirim_email("user@contoh.com")
-howl("Email sedang dikirim di background...")
+playon kirim_email("user@contoh.com")
+ketok("Email lagi dikirim neng background...")
 ```
 
-### Sintaks Fungsional Bersih
+### Sintaks Garap-garapan
 
-Fungsi adalah warga kelas satu (_First-class citizens_).
+Fungsi iku warga kelas siji (_First-class citizens_).
 
 ```w404
-$tambah = hunt($a, $b)
-    bring $a + $b
+$tambah = garap($a, $b)
+    balekno $a + $b
 
-howl($tambah(10, 20))
+ketok($tambah(10, 20))
+```
+
+### Perulangan (`baleni`)
+
+Sintaks looping sederhana mirip `while`.
+
+```w404
+$i = 0
+baleni $i < 5
+    ketok("Hitungan " + $i)
+    $i = $i + 1
+```
+
+### OOP (`gerombolan`)
+
+Mendukung Class lan Object Instance (Gerombolan).
+
+```w404
+gerombolan Hero
+    garap serang()
+        ketok("Serangan bertubi-tubi sak enak udele!")
+
+$pahlawan = Hero()
+$pahlawan.serang()
 ```
 
 ### Struktur Data Modern
 
-Dukungan bawaan untuk Array dan Hash Map (Objek mirip JSON).
+Dukungan bawaan nggo Array lan Hash Map (Objek mirip JSON).
 
 ```w404
 $profil = {
     "nama": "Wolfie",
     "level": 99,
-    "skill": ["gigit", "howl", "prowl"]
+    "skill": ["gigit", "ketok", "playon"]
 }
 
-howl($profil["nama"])
+ketok($profil["nama"])
 ```
 
 ## 📚 Dokumentasi
 
-Dokumentasi lengkap tersedia di direktori [docs/](docs/):
+Dokumentasi lengkap kasedhiya neng direktori [docs/](docs/):
 
-- [**Panduan Instalasi**](docs/INSTALLATION.md) - Cara build untuk Windows, Linux, dan macOS.
-- [**Sintaks Bahasa**](docs/SYNTAX.md) - Pelajari variabel, loop, logika if, dan fungsi.
-- [**Pustaka Standar**](docs/STDLIB.md) - Referensi fungsi bawaan.
-- [**Arsitektur**](docs/ARCHITECTURE.md) - Cara kerja internal Interpreter/Compiler.
+- [**Panduan Instalasi**](docs/INSTALLATION.md) - Cara build nggo Windows, Linux, lan macOS.
+- [**Sintaks Boso**](docs/SYNTAX.md) - Sinau variabel, loop, logika if, lan fungsi.
+- [**Pustaka Standar**](docs/STDLIB.md) - Referensi fungsi gowoan.
+- [**Arsitektur**](docs/ARCHITECTURE.md) - Cara kerjo internal Interpreter/Compiler.
 
 ## 🤝 Kontribusi
 
-Wolf404 adalah proyek sumber terbuka (open-source). Mari bergabung dengan kawanan!
+Wolf404 iku proyek sumber terbuka (open-source). Ayo gabung neng kawanan!
 
 ## 📄 Lisensi
 

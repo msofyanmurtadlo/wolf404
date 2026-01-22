@@ -64,26 +64,29 @@ const (
 	TOKEN_RANGE   // range
 	TOKEN_NIL     // nil
 	TOKEN_PROWL   // prowl (go routine)
+	TOKEN_MOLD    // mold (class)
+	TOKEN_DOT     // .
 )
 
 var keywords = map[string]TokenType{
-	"hunt":    TOKEN_HUNT,
-	"sniff":   TOKEN_SNIFF,
-	"missing": TOKEN_MISSING,
-	"track":   TOKEN_TRACK,
-	"bring":   TOKEN_BRING,
-	"howl":    TOKEN_HOWL,
-	"summon":  TOKEN_SUMMON,
-	"pack":    TOKEN_PACK,
-	"in":      TOKEN_IN,
-	"range":   TOKEN_RANGE,
-	"true":    TOKEN_TRUE,
-	"false":   TOKEN_FALSE,
-	"nil":     TOKEN_NIL,
-	"and":     TOKEN_AND,
-	"or":      TOKEN_OR,
-	"not":     TOKEN_NOT,
-	"prowl":   TOKEN_PROWL,
+	"garap":   TOKEN_HUNT,
+	"gerombolan":   TOKEN_MOLD,
+	"menowo":  TOKEN_SNIFF,
+	"yenora":  TOKEN_MISSING,
+	"baleni":  TOKEN_TRACK,
+	"balekno": TOKEN_BRING,
+	"bengok":  TOKEN_HOWL,
+	"undang":  TOKEN_SUMMON,
+	"bungkus": TOKEN_PACK,
+	"neng":    TOKEN_IN,
+	"deret":   TOKEN_RANGE,
+	"bener":   TOKEN_TRUE,
+	"salah":   TOKEN_FALSE,
+	"kopong":  TOKEN_NIL,
+	"lan":     TOKEN_AND,
+	"utowo":   TOKEN_OR,
+	"ora":     TOKEN_NOT,
+	"playon":  TOKEN_PROWL,
 }
 
 // Token represents a lexical token
@@ -265,6 +268,8 @@ func (l *Lexer) NextToken() Token {
 		tok = newToken(TOKEN_COMMA, l.ch, l.line, l.column)
 	case ':':
 		tok = newToken(TOKEN_COLON, l.ch, l.line, l.column)
+	case '.':
+		tok = newToken(TOKEN_DOT, l.ch, l.line, l.column)
 	case '(':
 		tok = newToken(TOKEN_LPAREN, l.ch, l.line, l.column)
 	case ')':
@@ -469,6 +474,10 @@ func TokenTypeString(t TokenType) string {
 		return "INDENT"
 	case TOKEN_DEDENT:
 		return "DEDENT"
+	case TOKEN_MOLD:
+		return "MOLD"
+	case TOKEN_DOT:
+		return "."
 	default:
 		return "UNKNOWN"
 	}

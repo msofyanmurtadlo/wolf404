@@ -1,19 +1,29 @@
-$add = hunt($a, $b)
-    bring $a + $b
+ketok("--- Nyobo Fungsi ---")
 
-$sum = $add(10, 20)
-howl("Hasil fungsi add:")
-howl($sum)
+$tambah = garap($a, $b)
+    balekno $a + $b
 
-$greater = hunt($x)
-    howl("Executing greater...")
-    bring $x > 50
+ketok("Hasile 10+20:", $tambah(10, 20))
 
-$result = $greater(100)
-howl("Apakah lebih besar dari 50?")
-howl($result)
+ketok("--- Nyobo Baleni (Loop) ---")
 
-// Tes Builtin len
-$arr = [1, 2, 3, 4]
-howl("Panjang array:")
-howl(len($arr))
+$i = 0
+baleni $i < 3
+    ketok("Baleni ping:", $i)
+    $i = $i + 1
+
+ketok("--- Nyobo OOP (Gerombolan) ---")
+
+gerombolan Serigala
+    garap init($jeneng)
+        $this.jeneng = $jeneng
+        ketok("Serigala lair:", $jeneng)
+
+    garap aum()
+        ketok($this.jeneng + " mberu: AUUUUU!")
+
+$ghost = Serigala("Ghost")
+$ghost.aum()
+
+$nymeria = Serigala("Nymeria")
+ketok("Jenenge sing keloro:", $nymeria.jeneng)

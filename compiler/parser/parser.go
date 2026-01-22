@@ -11,6 +11,7 @@ import (
 const (
 	_ int = iota
 	LOWEST
+	ASSIGN      // =
 	EQUALS      // ==
 	LESSGREATER // > or <
 	SUM         // +
@@ -21,6 +22,8 @@ const (
 )
 
 var precedences = map[lexer.TokenType]int{
+	lexer.TOKEN_ASSIGN:   ASSIGN,
+	lexer.TOKEN_DOT:      INDEX,
 	lexer.TOKEN_LBRACKET: INDEX,
 	lexer.TOKEN_EQ:       EQUALS,
 	lexer.TOKEN_NEQ:      EQUALS,
@@ -84,6 +87,8 @@ func New(l *lexer.Lexer) *Parser {
 	p.registerInfix(lexer.TOKEN_NEQ, p.parseInfixExpression)
 	p.registerInfix(lexer.TOKEN_LT, p.parseInfixExpression)
 	p.registerInfix(lexer.TOKEN_GT, p.parseInfixExpression)
+	p.registerInfix(lexer.TOKEN_ASSIGN, p.parseInfixExpression)
+	p.registerInfix(lexer.TOKEN_DOT, p.parseInfixExpression)
 	p.registerInfix(lexer.TOKEN_LPAREN, p.parseCallExpression)
 	p.registerInfix(lexer.TOKEN_LBRACKET, p.parseIndexExpression)
 
@@ -132,12 +137,14 @@ func (p *Parser) ParseProgram() *ast.Program {
 
 func (p *Parser) parseStatement() ast.Statement {
 	switch p.curToken.Type {
-	case lexer.TOKEN_DOLLAR:
-		return p.parseLetStatement()
 	case lexer.TOKEN_BRING:
 		return p.parseReturnStatement()
 	case lexer.TOKEN_PROWL:
 		return p.parseProwlStatement()
+	case lexer.TOKEN_TRACK:
+		return p.parseTrackStatement()
+	case lexer.TOKEN_MOLD:
+		return p.parseClassStatement()
 	case lexer.TOKEN_NEWLINE, lexer.TOKEN_INDENT, lexer.TOKEN_DEDENT:
 		return nil
 	default:

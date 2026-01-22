@@ -1,30 +1,47 @@
-# Pustaka Standar (Standard Library)
+# Pustaka Standar (Standard Library) - Edisi Jowo Kasar
 
-Wolf404 dilengkapi dengan sekumpulan fungsi bawaan yang tersedia secara global.
+Wolf404 digowo nganggo pirang-pirang fungsi gowoan sing iso langsung dinggo.
 
 ## Fungsi Inti
 
-### `howl(arg1, ...)`
+### `ketok(arg1, ...)`
 
-Mencetak nilai ke standard output (konsol/terminal). Menerima banyak argumen sekaligus.
+Ngetokne nilai neng standar output (konsol/terminal). Iso nrimo akeh argumen pisanan.
 
 ```w404
-howl("Halo Dunia")
-howl("Nilainya adalah:", $x)
+ketok("Halo Ndunyo")
+ketok("Nilaine yoiku:", $x)
 ```
 
-### `len(arg)`
+### `dowo(arg)`
 
-Mengembalikan panjang (length) dari string atau array.
+Mbalekno dowone (length) string utowo array.
 
 ```w404
 $arr = [1, 2, 3]
-howl(len($arr)) // Output: 3
+ketok(dowo($arr)) // Hasile: 3
 
 $teks = "Wolf"
-howl(len($teks)) // Output: 4
+ketok(dowo($teks)) // Hasile: 4
 ```
+
+### `takon(prompt)`
+
+Njaluk input soko user.
+
+```w404
+$jeneng = takon("Sopo jenengmu? ")
+ketok("Halo " + $jeneng)
+```
+
+### `moco_file(path)`
+
+Moco isi file.
+
+### `nulis_file(path, isi)`
+
+Nulis isi neng file.
 
 ---
 
-_Catatan: Modul standar lainnya seperti `http`, `fs` (file system), dan `json` sedang dalam tahap pengembangan._
+_Catetan: Modul standar liyane koyo `http`, `fs` (file system), lan `json` isih digarap._

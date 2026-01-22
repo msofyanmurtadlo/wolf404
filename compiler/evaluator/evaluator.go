@@ -12,8 +12,12 @@ var (
 	FALSE = &object.Boolean{Value: false}
 )
 
-func Eval(node ast.Node, env *object.Environment) object.Object {
-	// fmt.Printf("DEBUG: Evaluating %T\n", node)  // Uncomment for debug
+func Eval(node ast.Node, env *object.Environment) (result object.Object) {
+	defer func() {
+		if r := recover(); r != nil {
+			result = newError("Kahanan darurat (Panic)! Interpreter mbrebes mileh: %v", r)
+		}
+	}()
 
 	switch node := node.(type) {
 	// Statements
@@ -63,6 +67,12 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		go Eval(node.Call, env)
 		return NULL
 
+	case *ast.TrackStatement:
+		return evalTrackStatement(node, env)
+
+	case *ast.ClassStatement:
+		return evalClassStatement(node, env)
+
 	// Expressions
 	case *ast.IntegerLiteral:
 		return &object.Integer{Value: node.Value}
@@ -98,6 +108,12 @@ func Eval(node ast.Node, env *object.Environment) object.Object {
 		return evalIdentifier(node, env)
 
 	case *ast.InfixExpression:
+		if node.Operator == "." {
+			return evalDotExpression(node, env)
+		}
+		if node.Operator == "=" {
+			return evalAssignmentExpression(node, env)
+		}
 		left := Eval(node.Left, env)
 		if isError(left) {
 			return left
@@ -210,6 +226,9 @@ func evalIntegerInfixExpression(operator string, left, right object.Object) obje
 	case "*":
 		return &object.Integer{Value: leftVal * rightVal}
 	case "/":
+		if rightVal == 0 {
+			return newError("Ora iso pembagian nol (Division by Zero)! Gendeng opo?")
+		}
 		return &object.Integer{Value: leftVal / rightVal}
 	case "<":
 		return nativeBoolToBooleanObject(leftVal < rightVal)
