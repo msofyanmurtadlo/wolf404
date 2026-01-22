@@ -1,0 +1,19 @@
+$add = hunt($a, $b)
+    bring $a + $b
+
+$sum = $add(10, 20)
+howl("Hasil fungsi add:")
+howl($sum)
+
+$greater = hunt($x)
+    howl("Executing greater...")
+    bring $x > 50
+
+$result = $greater(100)
+howl("Apakah lebih besar dari 50?")
+howl($result)
+
+// Tes Builtin len
+$arr = [1, 2, 3, 4]
+howl("Panjang array:")
+howl(len($arr))

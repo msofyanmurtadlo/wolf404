@@ -1,0 +1,21 @@
+# Binaries & Executables
+*.exe
+*.dll
+*.so
+*.dylib
+wlf
+wlf_linux
+wlf_mac*
+main
+
+# Output & Logs
+output*.txt
+*.log
+
+# Editor & IDE
+.vscode/
+.idea/
+*.swp
+
+# Go Modules
+vendor/
