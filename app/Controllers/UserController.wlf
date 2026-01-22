@@ -20,7 +20,8 @@ gerombolan UserController
         })
     
     // Get single user (show)
-    garap show($request, $id)
+    garap show($request)
+        $id = $request["params"][0]
         // Check authentication
         $auth_check = $this.auth.handle($request)
         menowo $auth_check["error"] == bener

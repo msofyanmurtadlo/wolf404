@@ -1,6 +1,5 @@
 // system/Router.wlf
 
-
 gerombolan Router
     garap init()
         $this.routes = []
@@ -12,9 +11,14 @@ gerombolan Router
         $this.add_route("POST", $path, $handler)
         
     garap add_route($method, $path, $handler)
+        // Convert {param} to regex group ([^/]+)
+        $pattern = "^" + string_replace($path, "{", "([^/]+)")
+        $pattern = string_replace($pattern, "}", "") + "$"
+        
         $route = {
             "method": $method,
             "path": $path,
+            "pattern": $pattern,
             "handler": $handler
         }
         plumbungan($this.routes, $route)
@@ -23,7 +27,7 @@ gerombolan Router
         $method = $request["metode"]
         $path = $request["path"]
         
-        // Serve static files from public directory
+        // Static file serving legacy (manual for now)
         menowo $path == "/logo.png"
             balekno moco_file("public/logo.png")
         menowo $path == "/logo.ico"
@@ -36,8 +40,15 @@ gerombolan Router
             $route = $this.routes[$i]
             
             menowo $route["method"] == $method
-                menowo $route["path"] == $path
+                $pattern = $route["pattern"]
+                
+                menowo string_regex_match($path, $pattern)
                     $handler = $route["handler"]
+                    
+                    // Extract parameters
+                    $params = string_regex_capture($path, $pattern)
+                    $request["params"] = $params
+                    
                     balekno $handler($request)
                 
             $i = $i + 1
@@ -47,4 +58,3 @@ gerombolan Router
             balekno http_error(404, "Route ora ketemu")
         yenora
             balekno "<!DOCTYPE html><html><head><title>404 Not Found</title></head><body><h1>404 Not Found</h1><p>The page you are looking for could not be found.</p></body></html>"
-

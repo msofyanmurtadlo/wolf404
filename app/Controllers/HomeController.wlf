@@ -6,7 +6,7 @@ gerombolan HomeController
 
     garap index($req)
         $view_func = $this.view
-        balekno $view_func("welcome")
+        balekno $view_func("welcome", {"user": "ishowpen"})
 
     garap about($req)
         balekno "<h1>About Page</h1><p>This is a simple web page served by Wolf404 Controller.</p>"

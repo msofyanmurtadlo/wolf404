@@ -1,6 +1,27 @@
+// system/Helpers.wlf
 
-$view = garap($name)
+$view = garap($name, $data)
     $path = "resources/views/" + $name + ".wlf"
-    balekno moco_file($path)
+    $template = moco_file($path)
+    
+    // Menowo $data kuwi kopong, langsung balekno template
+    menowo $data == kopong
+        balekno $template
+        
+    $ks = keys($data)
+    $count = dowo($ks)
+    $i = 0
+    
+    // Looping kabeh key nggo di-replace neng template
+    track $i < $count
+        $key = $ks[$i]
+        $val = $data[$key]
+        
+        $search = "{{ " + $key + " }}"
+        $template = string_replace($template, $search, string($val))
+        
+        $i = $i + 1
+    
+    balekno $template
 
 balekno $view

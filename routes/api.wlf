@@ -36,4 +36,8 @@ $register_api_routes = garap($router, $db)
         balekno $user_controller.store($req)
     )
 
+    $router.get("/api/users/{id}", garap($req)
+        balekno $user_controller.show($req)
+    )
+
 balekno $register_api_routes

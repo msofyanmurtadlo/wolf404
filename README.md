@@ -52,10 +52,12 @@ Setelah itu, semua file dengan ekstensi `.wlf` akan menampilkan logo Wolf404! �
 ## 🌟 Fitur Utama
 
 - **Arsitektur MVC**: Terbagi menjadi Controller (`app/Controllers`), View (`resources/views`), dan Model (`app/Models`).
-- **Siap Pakai Tailwind CSS**: Sudah termasuk via CDN pada tampilan default untuk pengembangan UI yang cepat.
+- **Real Database Engine**: Menggunakan SQLite asli (via `database/sql`) bukan simulasi. Mendukung penyimpanan data persisten.
+- **Keamanan SQL**: Mendukung prepared statements (`?` placeholders) untuk mencegah SQL Injection secara otomatis.
+- **Dynamic Routing**: Mendukung parameter dinamis dalam route (contoh: `/api/users/{id}`).
+- **Template Engine (Blade-style)**: Mendukung injeksi variabel ke dalam tampilan menggunakan sintaks `{{ variabel }}`.
 - **Sintaks Bilingual**: Anda dapat menulis kode dalam bahasa **Jawa** (`garap`, `ketok`) atau **Inggris** (`hunt`, `howl`).
 - **CLI Seperti Artisan**: Gunakan perintah `wlf gas server` untuk menjalankan aplikasi Anda.
-- **Database SQLite**: Dukungan bawaan untuk penyimpanan data yang persisten.
 
 ## 🚀 Cara Menjalankan (How to Run)
 

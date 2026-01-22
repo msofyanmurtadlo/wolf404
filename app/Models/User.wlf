@@ -8,20 +8,14 @@ gerombolan User
     
     // Find user by ID
     garap find($id)
-        $sql = "SELECT * FROM " + $this.table + " WHERE id = " + $id
-        $result = db_query($sql)
+        $sql = "SELECT * FROM " + $this.table + " WHERE id = ?"
+        $result = db_query($sql, [$id])
         balekno $result
     
     // Find user by username
     garap find_by_username($username)
-        $sql = "SELECT * FROM " + $this.table + " WHERE username = '" + $username + "'"
-        $result = db_query($sql)
-        balekno $result
-    
-    // Find user by email
-    garap find_by_email($email)
-        $sql = "SELECT * FROM " + $this.table + " WHERE email = '" + $email + "'"
-        $result = db_query($sql)
+        $sql = "SELECT * FROM " + $this.table + " WHERE username = ?"
+        $result = db_query($sql, [$username])
         balekno $result
     
     // Get all users
@@ -37,8 +31,8 @@ gerombolan User
         $password = hash_password($data["password"])
         $name = $data["name"]
         
-        $sql = "INSERT INTO " + $this.table + " (username, email, password, name) VALUES ('" + $username + "', '" + $email + "', '" + $password + "', '" + $name + "')"
-        $result = db_exec($sql)
+        $sql = "INSERT INTO " + $this.table + " (username, email, password, name) VALUES (?, ?, ?, ?)"
+        $result = db_exec($sql, [$username, $email, $password, $name])
         balekno $result
     
     // Update user
@@ -46,16 +40,12 @@ gerombolan User
         $name = $data["name"]
         $email = $data["email"]
         
-        $sql = "UPDATE " + $this.table + " SET name = '" + $name + "', email = '" + $email + "' WHERE id = " + $id
-        $result = db_exec($sql)
+        $sql = "UPDATE " + $this.table + " SET name = ?, email = ? WHERE id = ?"
+        $result = db_exec($sql, [$name, $email, $id])
         balekno $result
     
     // Delete user
     garap delete($id)
-        $sql = "DELETE FROM " + $this.table + " WHERE id = " + $id
-        $result = db_exec($sql)
+        $sql = "DELETE FROM " + $this.table + " WHERE id = ?"
+        $result = db_exec($sql, [$id])
         balekno $result
-    
-    // Verify password
-    garap verify_password($password, $hash)
-        balekno verify_password($password, $hash)
